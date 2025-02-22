@@ -10,11 +10,11 @@ export default function sketch(p: P5) {
     p.draw = () => {
         p.background(220)
         p.fill("#FF3B3B")
+
         ballPositions.forEach(ballPosition => {
             p.ellipse(ballPosition.x, ballPosition.y, 40)
 
             // 示例：篮球基础运动
-            ballPosition.x += p.random(-2, 2)
             ballPosition.y += 1
         })
     }
