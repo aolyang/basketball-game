@@ -1,26 +1,37 @@
 import type P5 from "p5"
 
+import { BASE_HEIGHT, BASE_WIDTH } from "./config/constants.ts"
+import { getScaleFactors } from "./utils/screenAdapter.ts"
+
 export default function sketch(p: P5) {
-    let ballPositions: P5.Vector[] = []
+    let graphicsBuffer: P5.Graphics
 
     p.setup = () => {
-        p.createCanvas(800, 600)
+        // 创建主画布（实际显示尺寸）
+        p.createCanvas(p.windowWidth, p.windowHeight)
+
+        // 创建离屏缓冲区（逻辑分辨率）
+        graphicsBuffer = p.createGraphics(BASE_WIDTH, BASE_HEIGHT)
+        graphicsBuffer.pixelDensity(1) // 关闭高DPI缩放
     }
 
     p.draw = () => {
-        p.background(220)
-        p.fill("#FF3B3B")
+        // 1. 清空主画布
+        p.clear()
 
-        ballPositions.forEach(ballPosition => {
-            p.ellipse(ballPosition.x, ballPosition.y, 40)
+        // 2. 更新离屏缓冲区
+        graphicsBuffer.background(51)
 
-            // 示例：篮球基础运动
-            ballPosition.y += 1
-        })
+        // 3. 计算缩放参数
+        const { scale, offsetX, offsetY } = getScaleFactors(p)
+
+        // 4. 绘制到主画布（保持像素对齐）
+        p.imageMode(p.CORNER)
+        p.image(graphicsBuffer, offsetX, offsetY, BASE_WIDTH * scale, BASE_HEIGHT * scale)
     }
 
-    // 事件监听示例
-    p.mousePressed = () => {
-        ballPositions.push(p.createVector(p.mouseX, p.mouseY))
+    p.windowResized = () => {
+        p.resizeCanvas(p.windowWidth, p.windowHeight)
+        p.redraw()
     }
 }
