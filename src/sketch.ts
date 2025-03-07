@@ -1,14 +1,20 @@
 import type P5 from "p5"
+import fontUrl from "./assets/font/Virgil.ttf"
 
-export default function sketch(p: P5) {
+export default function sketch(p5: P5) {
     let aspectRatio = 16 / 9
     let canvasWidth = 0
     let canvasHeight = 0
+    let font: P5.Font
+
+    p5.preload = () => {
+        font = p5.loadFont(fontUrl)
+    }
 
     const calculateCanvasSize = () => {
         // Get the window dimensions
-        const windowWidth = p.windowWidth
-        const windowHeight = p.windowHeight
+        const windowWidth = p5.windowWidth
+        const windowHeight = p5.windowHeight
 
         // Calculate canvas size maintaining 16:9 aspect ratio
         if (windowWidth / windowHeight > aspectRatio) {
@@ -22,27 +28,31 @@ export default function sketch(p: P5) {
         }
     }
 
-    p.setup = () => {
+    p5.setup = () => {
         calculateCanvasSize()
-        p.createCanvas(canvasWidth, canvasHeight)
-        p.pixelDensity(window.devicePixelRatio) // Handle DPI scaling
+        p5.createCanvas(canvasWidth, canvasHeight)
+        p5.pixelDensity(window.devicePixelRatio) // Handle DPI scaling
+        p5.textFont(font)
+        p5.textAlign(p5.CENTER, p5.CENTER)
     }
 
-    p.draw = () => {
-        p.background(0xdb, 0xd7, 0xd3) // Set background to #dbd7d3
+    p5.draw = () => {
+        p5.background(0xdb, 0xd7, 0xd3) // Set background to #dbd7d3
+
+        // Draw player selection text
+        const baseY = canvasHeight * 0.7 // 30% from bottom
+        const spacing = 50 // Spacing between text items
         
-        // Center the canvas on screen
-        const x = (p.windowWidth - canvasWidth) / 2
-        const y = (p.windowHeight - canvasHeight) / 2
-        
-        p.canvas.style.position = 'absolute'
-        p.canvas.style.left = `${x}px`
-        p.canvas.style.top = `${y}px`
+        p5.textSize(48)
+        p5.fill(0) // Black text color
+        p5.text('select player:', canvasWidth / 2.3, baseY)
+        p5.text('+ player 1', canvasWidth / 2, baseY + spacing)
+        p5.text('+ player 2', canvasWidth / 2, baseY + spacing * 2)
     }
 
-    p.windowResized = () => {
+    p5.windowResized = () => {
         calculateCanvasSize()
-        p.resizeCanvas(canvasWidth, canvasHeight)
-        p.redraw()
+        p5.resizeCanvas(canvasWidth, canvasHeight)
+        p5.redraw()
     }
 }
