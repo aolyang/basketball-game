@@ -4,6 +4,8 @@ interface DialogConfig {
     title: string
     onConfirm: () => void
     onCancel: () => void
+    onShow?: () => void
+    onHide?: () => void
     isVisible: boolean
 }
 
@@ -11,7 +13,6 @@ export class Dialog {
     private config: DialogConfig
     private buttonWidth = 100
     private buttonHeight = 40
-    private padding = 20
     private dialogWidth = 300
     private dialogHeight = 200
 
@@ -76,10 +77,12 @@ export class Dialog {
 
     show() {
         this.config.isVisible = true
+        this.config.onShow?.()
     }
 
     hide() {
         this.config.isVisible = false
+        this.config.onHide?.()
     }
 
     isVisible(): boolean {

@@ -20,6 +20,7 @@ interface GameState {
     player: PlayerConfig
     debug: DebugConfig
     currentPage: GamePage
+    isPaused: boolean
 }
 
 export const gameState: GameState = {
@@ -35,5 +36,6 @@ export const gameState: GameState = {
         showFPS: false,
         showColliders: false
     },
-    currentPage: "main"
+    currentPage: "main",
+    isPaused: false
 }
