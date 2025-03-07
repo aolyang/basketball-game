@@ -1,37 +1,48 @@
 import type P5 from "p5"
 
-import { BASE_HEIGHT, BASE_WIDTH } from "./config/constants.ts"
-import { getScaleFactors } from "./utils/screenAdapter.ts"
-
 export default function sketch(p: P5) {
-    let graphicsBuffer: P5.Graphics
+    let aspectRatio = 16 / 9
+    let canvasWidth = 0
+    let canvasHeight = 0
+
+    const calculateCanvasSize = () => {
+        // Get the window dimensions
+        const windowWidth = p.windowWidth
+        const windowHeight = p.windowHeight
+
+        // Calculate canvas size maintaining 16:9 aspect ratio
+        if (windowWidth / windowHeight > aspectRatio) {
+            // Window is wider than needed
+            canvasHeight = windowHeight
+            canvasWidth = windowHeight * aspectRatio
+        } else {
+            // Window is taller than needed
+            canvasWidth = windowWidth
+            canvasHeight = windowWidth / aspectRatio
+        }
+    }
 
     p.setup = () => {
-        // 创建主画布（实际显示尺寸）
-        p.createCanvas(p.windowWidth, p.windowHeight)
-
-        // 创建离屏缓冲区（逻辑分辨率）
-        graphicsBuffer = p.createGraphics(BASE_WIDTH, BASE_HEIGHT)
-        graphicsBuffer.pixelDensity(1) // 关闭高DPI缩放
+        calculateCanvasSize()
+        p.createCanvas(canvasWidth, canvasHeight)
+        p.pixelDensity(window.devicePixelRatio) // Handle DPI scaling
     }
 
     p.draw = () => {
-        // 1. 清空主画布
-        p.clear()
-
-        // 2. 更新离屏缓冲区
-        graphicsBuffer.background(51)
-
-        // 3. 计算缩放参数
-        const { scale, offsetX, offsetY } = getScaleFactors(p)
-
-        // 4. 绘制到主画布（保持像素对齐）
-        p.imageMode(p.CORNER)
-        p.image(graphicsBuffer, offsetX, offsetY, BASE_WIDTH * scale, BASE_HEIGHT * scale)
+        p.background(0xdb, 0xd7, 0xd3) // Set background to #dbd7d3
+        
+        // Center the canvas on screen
+        const x = (p.windowWidth - canvasWidth) / 2
+        const y = (p.windowHeight - canvasHeight) / 2
+        
+        p.canvas.style.position = 'absolute'
+        p.canvas.style.left = `${x}px`
+        p.canvas.style.top = `${y}px`
     }
 
     p.windowResized = () => {
-        p.resizeCanvas(p.windowWidth, p.windowHeight)
+        calculateCanvasSize()
+        p.resizeCanvas(canvasWidth, canvasHeight)
         p.redraw()
     }
 }

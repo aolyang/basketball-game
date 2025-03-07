@@ -1,7 +1,12 @@
-# AI 推荐的目录结构
+## 项目目标
+使用p5.js创建一个剪纸风格的篮球游戏
+p1: 场景、运球、投球、记分
+p2: 两人对战、断球、抢篮板
+p3: 在线对战
+元素：鸡哥？
+技术线路：p5 typescript
 
-[English](./directories.en.md)
-
+## 项目结构
 ```
 # 根目录
 ├── src/                  # 主源代码目录
@@ -32,3 +37,7 @@
 # - screens/HUD.ts       游戏实时数据展示
 # - components/Button.ts 交互式按钮组件
 ```
+## 页面 & 游戏内容规定
+1. 游戏画面 16:9，根据屏幕DPI自动缩放
+2. 背景主题色：#dbd7d3
+3. 所有字体采用 src/assets/font/Virgil.woff2
