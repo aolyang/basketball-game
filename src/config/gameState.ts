@@ -13,10 +13,13 @@ interface DebugConfig {
     showColliders: boolean
 }
 
+type GamePage = "main" | "playing"
+
 interface GameState {
     canvas: CanvasConfig
     player: PlayerConfig
     debug: DebugConfig
+    currentPage: GamePage
 }
 
 export const gameState: GameState = {
@@ -31,5 +34,6 @@ export const gameState: GameState = {
     debug: {
         showFPS: false,
         showColliders: false
-    }
+    },
+    currentPage: "main"
 }

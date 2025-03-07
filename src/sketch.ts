@@ -19,7 +19,27 @@ export default function sketch(p5: P5) {
 
     p5.draw = () => {
         p5.background(0xdb, 0xd7, 0xd3) // Set background to #dbd7d3
-        renderPlayerSelect(p5)
+        if (gameState.currentPage === "main") {
+            renderPlayerSelect(p5)
+        } else {
+            // TODO: Render game scene
+        }
+    }
+
+    p5.keyPressed = () => {
+        if (gameState.currentPage === "main") {
+            switch (p5.keyCode) {
+                case p5.UP_ARROW:
+                    gameState.player.selectedPlayer = 1
+                    break
+                case p5.DOWN_ARROW:
+                    gameState.player.selectedPlayer = 2
+                    break
+                case p5.ENTER:
+                    gameState.currentPage = "playing"
+                    break
+            }
+        }
     }
 
     p5.windowResized = () => {
