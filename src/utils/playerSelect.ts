@@ -25,7 +25,7 @@ export function renderPlayerSelect(p5: P5) {
     // Draw basketball icon at selected player position
     p5.push()
     const iconX = width / 3.1 - iconSize * 1.5
-    const iconY = baseY + (selectedPlayer === 1 ? spacing : spacing * 2) / 1.14 - iconSize / 2
+    const iconY = baseY + (selectedPlayer === 1 ? spacing * 0.78 : spacing * 1.76) - iconSize / 2
     
     p5.translate(iconX, iconY)
     p5.scale(iconSize / 14) // Scale SVG path (original SVG viewBox is 14x14)

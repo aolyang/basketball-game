@@ -1,8 +1,10 @@
 import type P5 from "p5"
 import fontUrl from "./assets/font/Virgil.ttf"
-import { renderPlayerSelect } from "./utils/playerSelect"
 import { calculateCanvasSize, setupDPIScaling } from "./utils/dpi"
 import { gameState } from "./config/gameState"
+import { handleMainPageKeyboard } from "./keyboards/mainPage"
+import { renderMainPage } from "./ui/screens/main"
+import { renderGamePage, handleGameKeyboard } from "./ui/screens/game"
 
 export default function sketch(p5: P5) {
     let font: P5.Font
@@ -20,25 +22,17 @@ export default function sketch(p5: P5) {
     p5.draw = () => {
         p5.background(0xdb, 0xd7, 0xd3) // Set background to #dbd7d3
         if (gameState.currentPage === "main") {
-            renderPlayerSelect(p5)
+            renderMainPage(p5)
         } else {
-            // TODO: Render game scene
+            renderGamePage(p5)
         }
     }
 
     p5.keyPressed = () => {
         if (gameState.currentPage === "main") {
-            switch (p5.keyCode) {
-                case p5.UP_ARROW:
-                    gameState.player.selectedPlayer = 1
-                    break
-                case p5.DOWN_ARROW:
-                    gameState.player.selectedPlayer = 2
-                    break
-                case p5.ENTER:
-                    gameState.currentPage = "playing"
-                    break
-            }
+            handleMainPageKeyboard(p5)
+        } else if (gameState.currentPage === "playing") {
+            handleGameKeyboard(p5)
         }
     }
 

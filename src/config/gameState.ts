@@ -29,7 +29,7 @@ export const gameState: GameState = {
         aspectRatio: 16 / 9
     },
     player: {
-        selectedPlayer: 2
+        selectedPlayer: 1
     },
     debug: {
         showFPS: false,
