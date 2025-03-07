@@ -12,11 +12,9 @@ export default function sketch(p5: P5) {
     }
 
     p5.setup = () => {
-        calculateCanvasSize(p5)
         p5.createCanvas(gameState.canvas.width, gameState.canvas.height)
         setupDPIScaling(p5)
         p5.textFont(font)
-        p5.textAlign(p5.CENTER, p5.CENTER)
     }
 
     p5.draw = () => {
