@@ -1,11 +1,13 @@
 import type P5 from "p5"
 import fontUrl from "./assets/font/Virgil.ttf"
+import { renderPlayerSelect } from "./utils/playerSelect"
 
 export default function sketch(p5: P5) {
     let aspectRatio = 16 / 9
     let canvasWidth = 0
     let canvasHeight = 0
     let font: P5.Font
+    let selectedPlayer = 0
 
     p5.preload = () => {
         font = p5.loadFont(fontUrl)
@@ -39,15 +41,11 @@ export default function sketch(p5: P5) {
     p5.draw = () => {
         p5.background(0xdb, 0xd7, 0xd3) // Set background to #dbd7d3
 
-        // Draw player selection text
-        const baseY = canvasHeight * 0.7 // 30% from bottom
-        const spacing = 50 // Spacing between text items
-        
-        p5.textSize(48)
-        p5.fill(0) // Black text color
-        p5.text('select player:', canvasWidth / 2.3, baseY)
-        p5.text('+ player 1', canvasWidth / 2, baseY + spacing)
-        p5.text('+ player 2', canvasWidth / 2, baseY + spacing * 2)
+        renderPlayerSelect(p5, {
+            canvasWidth,
+            canvasHeight,
+            selectedPlayer
+        })
     }
 
     p5.windowResized = () => {
