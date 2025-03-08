@@ -13,7 +13,7 @@ export function renderPlayerSelect(p5: P5) {
         iconSize = fontSize * 0.8 // Basketball icon size relative to font size
 
     const { selectedPlayer } = gameState.player
-    const baseY = height * baseYRatio
+    const baseY = height * baseYRatio * 0.9
 
     p5.textSize(fontSize)
     p5.fill(255, 255, 255) // Black text color
