@@ -27,14 +27,14 @@ export default function sketch(p5: P5) {
     }
 
     p5.draw = () => {
-        p5.background(0xdb, 0xd7, 0xd3) // Set background to #dbd7d3
-        
+        p5.background(186, 180, 174) // Set background to rgb(186, 180, 174)
+
         if (gameState.currentPage === "main") {
             renderMainPage(p5)
         } else {
             renderGamePage(p5)
         }
-        
+
         fpsCounter.update()
         fpsCounter.draw()
     }

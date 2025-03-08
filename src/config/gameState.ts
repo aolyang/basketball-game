@@ -46,11 +46,11 @@ export const gameState: GameState = {
         showFPS: true
     },
     paperTexture: {
-        noiseScale: 1,
-        grainDensity: 0.2,
-        baseColor: "#404040",
+        noiseScale: 0.015,
+        grainDensity: 0.02,
+        baseColor: "#000000",
         dotGap: 4,
-        dotOffset: 10
+        dotOffset: 420
     },
     currentPage: "main",
     isPaused: false

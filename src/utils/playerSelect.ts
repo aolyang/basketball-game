@@ -16,7 +16,7 @@ export function renderPlayerSelect(p5: P5) {
     const baseY = height * baseYRatio
 
     p5.textSize(fontSize)
-    p5.fill(0) // Black text color
+    p5.fill(255, 255, 255) // Black text color
 
     // Draw player selection text
     p5.text("player select", width / 4, baseY)

@@ -12,6 +12,16 @@ let lastBaseColor = ""
 let lastDotGap = 0
 let lastDotOffset = 0
 
+/**
+ * 绘制纸张纹理效果
+ *
+ * 使用Perlin噪声创建自然的纸张纹理效果。该函数会缓存生成的纹理，
+ * 只有在参数变化时才会重新生成，以提高性能。
+ *
+ * @param p - p5实例
+ * @param width - 纹理宽度
+ * @param height - 纹理高度
+ */
 export function drawPaperTexture(
     p: p5,
     width: number,
@@ -56,39 +66,97 @@ export function drawPaperTexture(
             cachedTexture.clear()
         }
 
-        // 在缓存图像上绘制纹理
-        cachedTexture.noStroke()
-
-        // 计算点的颜色，使其相对于baseColor略微偏暗
+        // 获取基础颜色
         const baseP5Color = p.color(baseColor)
-        const dotColor = p.color(
-            p.red(baseP5Color) * 0.92,
-            p.green(baseP5Color) * 0.92,
-            p.blue(baseP5Color) * 0.92,
-            25 // 设置较低的透明度以创建叠加效果
-        )
-        cachedTexture.fill(dotColor)
 
-        // 使用点阵和噪声创建纸张纹理
-        for (let x = dotGap / 2; x < width; x += dotGap) {
-            for (let y = dotGap / 2; y < height; y += dotGap) {
-                const noiseValue = p.noise(
-                    (x + dotOffset) * noiseScale,
-                    (y + dotOffset) * grainDensity
-                )
-
-                // 根据噪声值确定点的大小，使用较小的系数来创建更细腻的效果
-                const diameter = noiseValue * dotGap * 0.6
-                cachedTexture.circle(x, y, diameter)
-            }
-        }
+        // 绘制纸张纹理
+        drawNoisePattern(p, cachedTexture, width, height, noiseScale, grainDensity, dotGap, dotOffset, baseP5Color)
     }
 
     // 绘制缓存的纹理
     p.image(cachedTexture!, 0, 0)
 }
 
-// 当窗口大小改变或需要重置缓存时调用
+/**
+ * 使用Perlin噪声绘制点阵纹理
+ *
+ * @param p - p5实例
+ * @param g - 绘图缓冲区
+ * @param width - 纹理宽度
+ * @param height - 纹理高度
+ * @param xScale - X轴噪声缩放因子（值越小纹理越平滑）
+ * @param yScale - Y轴噪声缩放因子（值越小纹理越平滑）
+ * @param gap - 点之间的间距（值越小纹理越精细但性能消耗越大）
+ * @param offset - 噪声偏移量（改变此值会生成不同的纹理模式）
+ * @param baseColor - 基础颜色
+ */
+function drawNoisePattern(
+    p: p5,
+    g: p5.Graphics,
+    width: number,
+    height: number,
+    xScale: number,
+    yScale: number,
+    gap: number,
+    offset: number,
+    baseColor: p5.Color
+): void {
+    // 设置绘图属性
+    g.noStroke()
+    g.clear()
+
+    // 提取基础颜色的RGB值
+    const r = p.red(baseColor)
+    const g2 = p.green(baseColor)
+    const b = p.blue(baseColor)
+
+    // 绘制深色点阵（主要纹理）
+    g.fill(r * 0.8, g2 * 0.8, b * 0.8, 40) // 深色版本的基础颜色，半透明
+
+    // 使用与示例代码相似的方法绘制点阵
+    for (let x = gap / 2; x < width; x += gap) {
+        for (let y = gap / 2; y < height; y += gap) {
+            // 计算噪声值，使用缩放和偏移的坐标
+            const noiseValue = p.noise((x + offset) * xScale, (y + offset) * yScale)
+
+            // 根据噪声值确定点的大小
+            const diameter = noiseValue * gap * 0.8
+
+            // 只绘制大于某个阈值的点，使纹理更加自然
+            if (noiseValue > 0.3) {
+                g.circle(x, y, diameter)
+            }
+        }
+    }
+
+    // 绘制浅色点阵（次要纹理，增加层次感）
+    g.fill(r * 1.1, g2 * 1.1, b * 1.1, 30) // 浅色版本的基础颜色，半透明
+
+    // 使用不同的缩放和偏移，创建第二层纹理
+    const secondaryXScale = xScale * 1.5
+    const secondaryYScale = yScale * 1.5
+    const secondaryOffset = offset + 500
+
+    for (let x = gap / 2; x < width; x += gap) {
+        for (let y = gap / 2; y < height; y += gap) {
+            const noiseValue = p.noise(
+                (x + secondaryOffset) * secondaryXScale,
+                (y + secondaryOffset) * secondaryYScale
+            )
+
+            const diameter = noiseValue * gap * 0.6
+
+            if (noiseValue > 0.5) {
+                g.circle(x, y, diameter)
+            }
+        }
+    }
+}
+
+/**
+ * 重置纹理缓存
+ * 当窗口大小改变或需要强制重新生成纹理时调用
+ */
 export function resetTextureCache() {
     if (cachedTexture) {
         cachedTexture.remove()
