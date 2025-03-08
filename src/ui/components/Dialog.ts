@@ -31,17 +31,17 @@ export class Dialog {
         const centerX = p5.width / 2
         const centerY = p5.height / 2
 
-        // 只有当鼠标移动时才重新计算悬停状态
+        // Only recalculate hover state when mouse moves
         if (p5.mouseX !== this.lastMouseX || p5.mouseY !== this.lastMouseY) {
             this.lastMouseX = p5.mouseX
             this.lastMouseY = p5.mouseY
 
-            // 计算按钮位置
+            // Calculate button positions
             const cancelX = centerX - 60
             const confirmX = centerX + 60
             const buttonY = centerY + 40
 
-            // 更新悬停状态
+            // Update hover states
             this.cancelButtonHovered = this.isMouseOverButton(p5, cancelX, buttonY)
             this.confirmButtonHovered = this.isMouseOverButton(p5, confirmX, buttonY)
         }
@@ -65,14 +65,14 @@ export class Dialog {
         this.drawButton(p5, centerX + 60, centerY + 40, "Confirm", true, this.confirmButtonHovered)
         p5.pop()
 
-        // 处理点击事件
+        // Handle click events
         if (p5.mouseIsPressed) {
             if (this.cancelButtonHovered) {
                 this.config.onCancel()
-                p5.mouseIsPressed = false // 防止多次触发
+                p5.mouseIsPressed = false // Prevent multiple triggers
             } else if (this.confirmButtonHovered) {
                 this.config.onConfirm()
-                p5.mouseIsPressed = false // 防止多次触发
+                p5.mouseIsPressed = false // Prevent multiple triggers
             }
         }
     }
@@ -80,21 +80,21 @@ export class Dialog {
     private drawButton(p5: P5, x: number, y: number, text: string, isConfirm: boolean, isHovered: boolean) {
         p5.push()
         p5.rectMode(p5.CENTER)
-        // 为确认按钮使用更深的颜色
+        // Use deeper color for confirm button
         if (isConfirm) {
-            // 确认按钮使用蓝色调
+            // Blue color scheme for confirm button
             p5.fill(isHovered ? 100 : 150, isHovered ? 150 : 180, isHovered ? 240 : 220)
-            // 为确认按钮添加灰色边框
+            // Add gray border to confirm button
             p5.stroke(80)
             p5.strokeWeight(2)
         } else {
-            // 取消按钮使用灰色调
+            // Gray color scheme for cancel button
             p5.fill(isHovered ? 200 : 240)
             p5.noStroke()
         }
-        p5.rect(x, y, this.buttonWidth, this.buttonHeight, 5) // 添加圆角
-        // 确认按钮使用白色文本以增加对比度
-        p5.noStroke() // 确保文本没有描边
+        p5.rect(x, y, this.buttonWidth, this.buttonHeight, 5) // Add rounded corners
+        // Use white text for confirm button to improve contrast
+        p5.noStroke() // Ensure text has no stroke
         if (isConfirm) {
             p5.fill(255)
         } else {
