@@ -6,6 +6,9 @@ interface CanvasConfig {
 
 interface PlayerConfig {
     selectedPlayer: number
+    isSelectionAnimating: boolean
+    selectionAnimationStartTime: number
+    flashCount: number
 }
 
 interface DebugConfig {
@@ -40,7 +43,10 @@ export const gameState: GameState = {
         aspectRatio: 16 / 9
     },
     player: {
-        selectedPlayer: 1
+        selectedPlayer: 1,
+        isSelectionAnimating: false,
+        selectionAnimationStartTime: 0,
+        flashCount: 0
     },
     debug: {
         showFPS: true

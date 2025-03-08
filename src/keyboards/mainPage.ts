@@ -11,7 +11,12 @@ export function handleMainPageKeyboard(p5: P5) {
             gameState.player.selectedPlayer = gameState.player.selectedPlayer === 1 ? 2 : 1
             break
         case p5.ENTER:
-            gameState.currentPage = "playing"
+            // Start the selection animation instead of immediately changing page
+            if (!gameState.player.isSelectionAnimating) {
+                gameState.player.isSelectionAnimating = true
+                gameState.player.selectionAnimationStartTime = p5.millis()
+                gameState.player.flashCount = 0
+            }
             break
     }
 }
