@@ -12,10 +12,50 @@ function renderPlayerOption(p5: P5, text: string, x: number, y: number, fontSize
     p5.text(text, x, y)
 }
 
-// Helper function to render the basketball icon
+// Physics constants for basketball bouncing
+const GRAVITY = 0.6 // Gravity acceleration
+const BOUNCE_DAMPING = 0.8 // Energy loss on bounce (80% energy retained)
+const FLOOR_Y_OFFSET = 20 // Floor position relative to the icon's base position
+const MAX_BOUNCE_HEIGHT = -30 // Maximum height for the bounce cycle reset
+const MIN_VELOCITY = 1.0 // Minimum velocity threshold for reset
+
+// State for basketball physics (persists between frames)
+let ballVelocity = 4 // Initial velocity
+let ballPosition = 0 // Current position offset
+let lastUpdateTime = 0 // Last update timestamp
+
+// Helper function to render the basketball icon with realistic bouncing animation
 function renderBasketballIcon(p5: P5, x: number, y: number, iconSize: number) {
+    const currentTime = p5.millis()
+
+    // Initialize lastUpdateTime on first run
+    if (lastUpdateTime === 0) {
+        lastUpdateTime = currentTime
+        // Start with ball moving downward
+        ballPosition = -iconSize * 0.3
+    }
+
+    lastUpdateTime = currentTime
+    ballVelocity += GRAVITY
+    ballPosition += ballVelocity
+
+    const floorPosition = FLOOR_Y_OFFSET
+    if (ballPosition > floorPosition) {
+        ballVelocity = -ballVelocity * BOUNCE_DAMPING
+        ballPosition = floorPosition
+    }
+
+    // Reset the bounce cycle when the ball is moving upward and reaches max height
+    // or when the velocity becomes too low (ball almost stops bouncing)
+    if ((ballVelocity < 0 && ballPosition <= MAX_BOUNCE_HEIGHT) ||
+        (Math.abs(ballVelocity) < MIN_VELOCITY && ballPosition >= floorPosition)) {
+        // Reset to initial state for continuous bouncing
+        ballVelocity = 4
+        ballPosition = MAX_BOUNCE_HEIGHT
+    }
+
     p5.push()
-    p5.translate(x, y)
+    p5.translate(x, y + ballPosition) // Apply physics-based position
     p5.scale(iconSize / 14) // Scale SVG path (original SVG viewBox is 14x14)
     renderSVGPath(p5, basketballSvgPath, {
         fill: { r: 255, g: 165, b: 0 }
@@ -37,16 +77,16 @@ export function renderPlayerSelect(p5: P5) {
     if (isSelectionAnimating) {
         const currentTime = p5.millis()
         const elapsedTime = currentTime - selectionAnimationStartTime
-        
+
         // Flash every 250ms (4 times per second)
         const shouldShow = Math.floor(elapsedTime / 250) % 2 === 0
-        
+
         // Update flash count
         const newFlashCount = Math.floor(elapsedTime / 250)
         if (newFlashCount > flashCount) {
             gameState.player.flashCount = newFlashCount
         }
-        
+
         // After 2 seconds (8 flashes), transition to game page
         if (elapsedTime >= 2000) {
             gameState.currentPage = "playing"
@@ -54,19 +94,19 @@ export function renderPlayerSelect(p5: P5) {
             gameState.player.flashCount = 0
             return
         }
-        
+
         // If we shouldn't show during this flash cycle, return early
         if (!shouldShow) {
             // Draw player selection title
             renderPlayerOption(p5, "player select", width / 4, baseY, fontSize)
-            
+
             // Draw only the non-selected option
             if (selectedPlayer === 1) {
                 renderPlayerOption(p5, "2 players", width / 3.22, baseY + spacing * 2, fontSize)
             } else {
                 renderPlayerOption(p5, "1 player", width / 3.1, baseY + spacing, fontSize)
             }
-            
+
             return
         }
     }
@@ -78,7 +118,7 @@ export function renderPlayerSelect(p5: P5) {
 
     // Calculate icon position based on selected player
     const iconX = width / 3.1 - iconSize * 1.5
-    const iconY = baseY + (selectedPlayer === 1 ? spacing * 0.78 : spacing * 1.76) - iconSize / 2
+    const iconY = baseY + (selectedPlayer === 1 ? spacing * 0.55 : spacing * 1.58) - iconSize / 2
 
     // Render the basketball icon
     renderBasketballIcon(p5, iconX, iconY, iconSize)
