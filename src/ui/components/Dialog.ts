@@ -80,9 +80,26 @@ export class Dialog {
     private drawButton(p5: P5, x: number, y: number, text: string, isConfirm: boolean, isHovered: boolean) {
         p5.push()
         p5.rectMode(p5.CENTER)
-        p5.fill(isHovered ? 200 : 240)
-        p5.rect(x, y, this.buttonWidth, this.buttonHeight)
-        p5.fill(0)
+        // 为确认按钮使用更深的颜色
+        if (isConfirm) {
+            // 确认按钮使用蓝色调
+            p5.fill(isHovered ? 100 : 150, isHovered ? 150 : 180, isHovered ? 240 : 220)
+            // 为确认按钮添加灰色边框
+            p5.stroke(80)
+            p5.strokeWeight(2)
+        } else {
+            // 取消按钮使用灰色调
+            p5.fill(isHovered ? 200 : 240)
+            p5.noStroke()
+        }
+        p5.rect(x, y, this.buttonWidth, this.buttonHeight, 5) // 添加圆角
+        // 确认按钮使用白色文本以增加对比度
+        p5.noStroke() // 确保文本没有描边
+        if (isConfirm) {
+            p5.fill(255)
+        } else {
+            p5.fill(0)
+        }
         p5.textAlign(p5.CENTER, p5.CENTER)
         p5.textSize(16)
         p5.text(text, x, y)

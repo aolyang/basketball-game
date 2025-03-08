@@ -1,7 +1,7 @@
 import type P5 from "p5"
 
 import { gameState } from "../../config/gameState"
-import { Dialog } from "../components/dialog"
+import { Dialog } from "../components/Dialog.ts"
 
 interface CircleState {
     x: number

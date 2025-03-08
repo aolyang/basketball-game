@@ -1,7 +1,7 @@
 import type P5 from "p5"
 
 import { gameState } from "../config/gameState"
-import { Dialog } from "../ui/screens/dialog"
+import { Dialog } from "../ui/components/Dialog.ts"
 
 const exitDialog = new Dialog({
     title: "Exit Game",
