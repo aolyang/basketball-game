@@ -10,20 +10,30 @@ interface PlayerConfig {
 
 interface DebugConfig {
     showFPS: boolean
-    showColliders: boolean
+}
+
+interface PaperTextureConfig {
+    noiseScale: number
+    grainDensity: number
+    baseColor: string
+    dotGap: number
+    dotOffset: number
 }
 
 type GamePage = "main" | "playing"
 
 interface GameState {
+    fps: number
     canvas: CanvasConfig
     player: PlayerConfig
     debug: DebugConfig
+    paperTexture: PaperTextureConfig
     currentPage: GamePage
     isPaused: boolean
 }
 
 export const gameState: GameState = {
+    fps: 60,
     canvas: {
         width: 1280,
         height: 720,
@@ -33,8 +43,14 @@ export const gameState: GameState = {
         selectedPlayer: 1
     },
     debug: {
-        showFPS: false,
-        showColliders: false
+        showFPS: true
+    },
+    paperTexture: {
+        noiseScale: 1,
+        grainDensity: 0.2,
+        baseColor: "#404040",
+        dotGap: 4,
+        dotOffset: 10
     },
     currentPage: "main",
     isPaused: false

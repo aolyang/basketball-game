@@ -1,6 +1,7 @@
 import type P5 from "p5"
-import { Dialog } from "../components/dialog"
+
 import { gameState } from "../../config/gameState"
+import { Dialog } from "../components/dialog"
 
 interface CircleState {
     x: number
@@ -65,7 +66,7 @@ export function renderGamePage(p5: P5) {
 
 export function handleGameKeyboard(p5: P5) {
     if (p5.keyCode === p5.ESCAPE) {
-        if (exitDialog.isVisible()) exitDialog.hide() 
+        if (exitDialog.isVisible()) exitDialog.hide()
         else exitDialog.show()
     } else if (p5.keyCode === p5.ENTER && exitDialog.isVisible()) {
         gameState.currentPage = "main"

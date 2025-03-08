@@ -33,7 +33,7 @@ function applyColor(p5: P5, color?: { r: number; g: number; b: number; a?: numbe
 export function renderSVGPath(p5: P5, pathString: string, options?: SVGPathOptions) {
     const path = new Path2D(pathString)
     const ctx = p5.drawingContext as CanvasRenderingContext2D
-    
+
     // Apply fill and stroke styles
     if (!applyColor(p5, options?.fill, false)) {
         p5.noFill()
@@ -41,7 +41,7 @@ export function renderSVGPath(p5: P5, pathString: string, options?: SVGPathOptio
     if (!applyColor(p5, options?.stroke, true)) {
         p5.noStroke()
     }
-    
+
     // Apply fill rule
     if (options?.fillRule === "evenodd") {
         ctx.fill(path, "evenodd")

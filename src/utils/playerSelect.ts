@@ -1,4 +1,5 @@
 import type P5 from "p5"
+
 import { gameState } from "../config/gameState"
 import { renderSVGPath } from "./svgPath"
 
@@ -7,10 +8,10 @@ const basketballSvgPath = "M1.333 2.89A6.97 6.97 0 0 0 0 7a6.97 6.97 0 0 0 1.333
 export function renderPlayerSelect(p5: P5) {
     const { width, height } = gameState.canvas
     const baseYRatio = 0.73,
-          spacing = 0.11 * height,
-          fontSize = 0.09 * height,
-          iconSize = fontSize * 0.8 // Basketball icon size relative to font size
-    
+        spacing = 0.11 * height,
+        fontSize = 0.09 * height,
+        iconSize = fontSize * 0.8 // Basketball icon size relative to font size
+
     const { selectedPlayer } = gameState.player
     const baseY = height * baseYRatio
 
@@ -18,20 +19,20 @@ export function renderPlayerSelect(p5: P5) {
     p5.fill(0) // Black text color
 
     // Draw player selection text
-    p5.text('player select', width / 4, baseY)
-    p5.text(`1 player`, width / 3.1, baseY + spacing)
-    p5.text(`2 players`, width / 3.22, baseY + spacing * 2)
+    p5.text("player select", width / 4, baseY)
+    p5.text("1 player", width / 3.1, baseY + spacing)
+    p5.text("2 players", width / 3.22, baseY + spacing * 2)
 
     // Draw basketball icon at selected player position
     p5.push()
     const iconX = width / 3.1 - iconSize * 1.5
     const iconY = baseY + (selectedPlayer === 1 ? spacing * 0.78 : spacing * 1.76) - iconSize / 2
-    
+
     p5.translate(iconX, iconY)
     p5.scale(iconSize / 14) // Scale SVG path (original SVG viewBox is 14x14)
     renderSVGPath(p5, basketballSvgPath, {
-        fill: { r: 255, g: 165, b: 0 }, // Orange fill
+        fill: { r: 255, g: 165, b: 0 } // Orange fill
     })
-    
+
     p5.pop()
 }

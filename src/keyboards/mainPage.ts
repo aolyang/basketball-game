@@ -1,4 +1,5 @@
 import type P5 from "p5"
+
 import { gameState } from "../config/gameState"
 
 export function handleMainPageKeyboard(p5: P5) {
