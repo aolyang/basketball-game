@@ -41,3 +41,11 @@ p3: 在线对战
 1. 游戏画面 16:9，根据屏幕DPI自动缩放
 2. 背景主题色：#dbd7d3
 3. 所有字体采用 src/assets/font/Virgil.woff2
+
+## 角色
+
+src/assets/slime-*.png 是240 * 240的精灵图帧
+
+1. slime-hit.png 用于头球、攻击
+2. slime-jump.png 用于跳跃、断球
+3. slime-move.png 用于移动

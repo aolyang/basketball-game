@@ -9,6 +9,7 @@ import { resetTextureCache } from "./ui/effects/PaperTexture"
 import { handleGameKeyboard, renderGamePage } from "./ui/screens/game"
 import { renderMainPage } from "./ui/screens/main"
 import { calculateCanvasSize, setupDPIScaling } from "./utils/dpi"
+import { initSlimeAnimations, preloadSlimeAnimations } from "./utils/slimeAnimation"
 
 export default function sketch(p5: P5) {
     let font: P5.Font
@@ -17,6 +18,7 @@ export default function sketch(p5: P5) {
 
     p5.preload = () => {
         font = p5.loadFont(fontUrl)
+        preloadSlimeAnimations(p5)
     }
 
     p5.setup = () => {
@@ -24,6 +26,7 @@ export default function sketch(p5: P5) {
         setupDPIScaling(p5)
         p5.textFont(font)
         p5.frameRate(gameState.fps)
+        initSlimeAnimations()
     }
 
     p5.draw = () => {
