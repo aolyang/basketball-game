@@ -66,7 +66,7 @@ export const gameState: GameState = {
         noiseScale: 0.015,
         grainDensity: 0.02,
         dotGap: 4,
-        baseColor: "#f5f2e9",
+        baseColor: "#000000",
         dotOffset: 42
     },
     court: {

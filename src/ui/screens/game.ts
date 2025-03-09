@@ -1,16 +1,8 @@
 import type P5 from "p5"
 
 import { gameState } from "../../config/gameState"
-import {
-    firstBackboardConfig,
-    forceNextFirstBackboardRender,
-    forceNextSecondBackboardRender,
-    renderFirstBackboard,
-    renderSecondBackboard,
-    secondBackboardConfig
-} from "../../utils/basketballBackboards"
-import { forceNextRender,renderBasketballCourt } from "../../utils/basketballCourtWebGL"
 import { Dialog } from "../components/Dialog"
+import { drawPaperTexture } from "../effects/PaperTexture"
 
 const exitDialog = new Dialog({
     title: "Exit Game",
@@ -35,30 +27,7 @@ const exitDialog = new Dialog({
 let pageLoaded = false
 
 export function renderGamePage(p5: P5) {
-    // 如果是首次加载页面，强制渲染篮球场和篮板
-    if (!pageLoaded) {
-        forceNextRender()
-        forceNextFirstBackboardRender()
-        forceNextSecondBackboardRender()
-        pageLoaded = true
-    }
-
-    // 清除背景
-    p5.background(240)
-
-    // 绘制篮球场
-    renderBasketballCourt(p5)
-
-    // 绘制第一个篮板（如果可见）
-    if (firstBackboardConfig.visible) {
-        renderFirstBackboard(p5)
-    }
-
-    // 绘制第二个篮板（如果可见）
-    if (secondBackboardConfig.visible) {
-        renderSecondBackboard(p5)
-    }
-
+    drawPaperTexture(p5, gameState.canvas.width, gameState.canvas.height)
     exitDialog.render(p5)
 }
 
