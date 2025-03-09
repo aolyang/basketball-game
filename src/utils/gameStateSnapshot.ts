@@ -1,5 +1,4 @@
 import { gameState } from "../config/gameState"
-import { firstBackboardConfig } from "./basketballBackboards"
 
 /**
  * 创建并返回当前gameState的快照
@@ -22,7 +21,7 @@ export function logGameStateSnapshot(): void {
 
 /**
  * 将当前gameState的特定部分输出到控制台
- * @param section 要输出的部分，如"court", "backboard"等
+ * @param section 要输出的部分，如"court", "canvas"等
  */
 export function logGameStateSection(section: keyof typeof gameState): void {
     if (section in gameState) {
@@ -32,15 +31,6 @@ export function logGameStateSection(section: keyof typeof gameState): void {
     } else {
         console.error(`Section "${section}" not found in gameState`)
     }
-}
-
-/**
- * 将当前篮板状态输出到控制台
- */
-export function logBackboardState(): void {
-    console.log(`=== First Backboard State ===`)
-    console.log(JSON.stringify(firstBackboardConfig, null, 2))
-    console.log("==========================")
 }
 
 /**

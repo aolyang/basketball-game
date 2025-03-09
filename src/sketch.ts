@@ -9,7 +9,8 @@ import { resetTextureCache } from "./ui/effects/PaperTexture"
 import { handleGameKeyboard, renderGamePage } from "./ui/screens/game"
 import { renderMainPage } from "./ui/screens/main"
 import { calculateCanvasSize, setupDPIScaling } from "./utils/dpi"
-import { logBackboardState, logGameStateSnapshot, saveGameStateToFile } from "./utils/gameStateSnapshot"
+import { preloadFloorTexture } from "./utils/floorTextureRenderer"
+import { logGameStateSnapshot, saveGameStateToFile } from "./utils/gameStateSnapshot"
 import { initSlimeAnimations, preloadSlimeAnimations } from "./utils/slimeAnimation"
 
 // 全局控制面板实例，使其可以在其他地方访问
@@ -23,6 +24,7 @@ export default function sketch(p5: P5) {
     p5.preload = () => {
         font = p5.loadFont(fontUrl)
         preloadSlimeAnimations(p5)
+        preloadFloorTexture(p5)
     }
 
     p5.setup = () => {
@@ -64,12 +66,6 @@ export default function sketch(p5: P5) {
         if (p5.key === "s" && p5.keyIsDown(p5.CONTROL)) {
             // Ctrl+S: 保存游戏状态到文件
             saveGameStateToFile()
-        } else if (p5.key === "p") {
-            // P: 输出完整游戏状态到控制台
-            logGameStateSnapshot()
-        } else if (p5.key === "b") {
-            // B: 输出篮板状态到控制台
-            logBackboardState()
         }
     }
 

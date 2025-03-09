@@ -1,6 +1,7 @@
 import type P5 from "p5"
 
 import { gameState } from "../../config/gameState"
+import { renderFloorTexture } from "../../utils/floorTextureRenderer"
 import { Dialog } from "../components/Dialog"
 import { drawPaperTexture } from "../effects/PaperTexture"
 
@@ -28,6 +29,7 @@ let pageLoaded = false
 
 export function renderGamePage(p5: P5) {
     drawPaperTexture(p5, gameState.canvas.width, gameState.canvas.height)
+    renderFloorTexture(p5)
     exitDialog.render(p5)
 }
 
