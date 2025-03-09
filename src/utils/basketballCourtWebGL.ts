@@ -34,7 +34,7 @@ function render3DBasketballCourt(graphics: P5.Graphics): void {
     console.log("Rendering basketball court in 3D mode", new Date().toISOString())
 
     const g = graphics
-    const { width, height } = gameState.canvas
+    const { width } = gameState.canvas
     const { rotationX, rotationY, rotationZ, originX, originY, originZ } = gameState.court
 
     // 清除背景

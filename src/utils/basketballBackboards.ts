@@ -1,7 +1,6 @@
 import type P5 from "p5"
 import type { BackboardConfig} from "./basketballBackboardRenderer"
 
-import { gameState } from "../config/gameState"
 import { BackboardRenderer } from "./basketballBackboardRenderer"
 
 // 第一个篮板的配置
