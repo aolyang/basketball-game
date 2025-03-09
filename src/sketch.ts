@@ -8,6 +8,7 @@ import { FPSCounter } from "./ui/components/FPSCounter"
 import { resetTextureCache } from "./ui/effects/PaperTexture"
 import { handleGameKeyboard, renderGamePage } from "./ui/screens/game"
 import { renderMainPage } from "./ui/screens/main"
+import { preloadNetTexture } from "./utils/ballNetRenderer"
 import { calculateCanvasSize, setupDPIScaling } from "./utils/dpi"
 import { preloadFloorTexture } from "./utils/floorTextureRenderer"
 import { saveGameStateToFile } from "./utils/gameStateSnapshot"
@@ -25,6 +26,7 @@ export default function sketch(p5: P5) {
         font = p5.loadFont(fontUrl)
         preloadSlimeAnimations(p5)
         preloadFloorTexture(p5)
+        preloadNetTexture(p5)
     }
 
     p5.setup = () => {

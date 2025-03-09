@@ -22,6 +22,24 @@ export class ControlPanel {
         floor.add(gameState.scene.floor, "offsetY", -100, 100, 1)
             .name("Vertical Position")
             .onChange(() => forceNextRender())
+            
+        // Add ball nets controls
+        const ballNets = this.gui.addFolder("Ball Nets")
+        ballNets.add(gameState.scene.ballNets, "leftX", 0, 0.5, 0.01)
+            .name("Left X Position")
+            .onChange(() => forceNextRender())
+        ballNets.add(gameState.scene.ballNets, "leftY", 0, 1, 0.01)
+            .name("Left Y Position")
+            .onChange(() => forceNextRender())
+        ballNets.add(gameState.scene.ballNets, "rightX", 0.5, 1, 0.01)
+            .name("Right X Position")
+            .onChange(() => forceNextRender())
+        ballNets.add(gameState.scene.ballNets, "rightY", 0, 1, 0.01)
+            .name("Right Y Position")
+            .onChange(() => forceNextRender())
+        ballNets.add(gameState.scene.ballNets, "scale", 0.5, 2, 0.1)
+            .name("Scale")
+            .onChange(() => forceNextRender())
 
         // 添加快照功能
         const snapshot = this.gui.addFolder("Snapshot")
@@ -49,6 +67,7 @@ export class ControlPanel {
 
         debug.close()
         floor.close()
+        ballNets.close()
         snapshot.close()
         paperTexture.close()
     }

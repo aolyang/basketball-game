@@ -41,9 +41,22 @@ interface FloorConfig {
     offsetY: number
 }
 
+interface BallNetConfig {
+    // Left net position (0-1, percentage of canvas dimensions)
+    leftX: number
+    leftY: number
+    // Right net position (0-1, percentage of canvas dimensions)
+    rightX: number
+    rightY: number
+    // Scale factor for both nets
+    scale: number
+}
+
 interface SceneConfig {
     // Floor configuration
     floor: FloorConfig
+    // Ball nets configuration
+    ballNets: BallNetConfig
 }
 
 type GamePage = "main" | "playing"
@@ -94,6 +107,13 @@ export const gameState: GameState = {
         floor: {
             offsetX: 0,
             offsetY: 0
+        },
+        ballNets: {
+            leftX: 0.07,
+            leftY: 0.5,
+            rightX: 0.93,
+            rightY: 0.5,
+            scale: 1
         }
     }
 }
