@@ -37,8 +37,6 @@ interface GameState {
 
 export const gameState: GameState = {
     fps: 60,
-    currentPage: "playing",
-    isPaused: false,
     canvas: {
         width: 1280,
         height: 720,
@@ -59,5 +57,7 @@ export const gameState: GameState = {
         baseColor: "#000000",
         dotGap: 4,
         dotOffset: 420
-    }
+    },
+    currentPage: "main",
+    isPaused: false
 }
