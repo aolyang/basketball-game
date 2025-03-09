@@ -34,9 +34,6 @@ interface CourtConfig {
     originZ: number
 }
 
-// Scene types for different game environments
-// type SceneType = "forest" | "city" | "beach" | "mountain" | "indoor"
-
 interface FloorConfig {
     // Horizontal offset for floor texture (0-1)
     offsetX: number

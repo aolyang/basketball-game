@@ -14,11 +14,8 @@ export class ControlPanel {
         const debug = this.gui.addFolder("Debug")
         debug.add(gameState.debug, "showFPS").name("Show FPS")
 
-        // Add scene controls
-        const scene = this.gui.addFolder("Scene")
-
         // Add floor controls
-        const floor = scene.addFolder("Floor")
+        const floor = this.gui.addFolder("Floor")
         floor.add(gameState.scene.floor, "offsetX", 0, 240, 1)
             .name("Horizontal Offset")
             .onChange(() => forceNextRender())
@@ -51,7 +48,7 @@ export class ControlPanel {
         paperTexture.addColor(gameState.paperTexture, "baseColor")
 
         debug.close()
-        scene.close()
+        floor.close()
         snapshot.close()
         paperTexture.close()
     }

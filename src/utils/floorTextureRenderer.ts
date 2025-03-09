@@ -134,31 +134,47 @@ export function renderFloorTexture(p5: P5): void {
         // Fixed texture dimensions (240x240)
         const textureWidth = 240
         const textureHeight = 240
-        
+
         // Calculate floor position
         // Position from bottom of screen, with offsetY adjustment
         const floorY = height / 2 - textureHeight / 2 + offsetY
-        
+
         // Calculate number of tiles needed to cover the width
         const tilesNeeded = Math.ceil(width / textureWidth) + 1 // Add one extra tile to ensure smooth scrolling
-        
+
         g.push()
-        
+
         // Set texture properties
         g.textureMode(p5.NORMAL)
         g.textureWrap(p5.REPEAT, p5.CLAMP)
-        
-        // Draw the floor as a series of quads with the texture
-        for (let i = 0; i < tilesNeeded; i++) {
-            const x = -width/2 + i * textureWidth + offsetX % textureWidth
-            
-            g.push()
-            g.translate(x, floorY, 0)
-            g.texture(floorTexture)
-            g.plane(textureWidth, textureHeight)
-            g.pop()
+
+        // Disable stroke to remove black borders
+        g.noStroke()
+        g.noFill()
+
+        // Use custom rendering to avoid borders between tiles
+        g.beginShape(p5.TRIANGLE_STRIP)
+        g.texture(floorTexture)
+
+        // Calculate the starting X position with offset
+        const startX = -width/2 - (offsetX % textureWidth)
+
+        // Create a continuous strip of triangles for the entire floor
+        for (let i = 0; i <= tilesNeeded; i++) {
+            const x = startX + i * textureWidth
+
+            // Top-left vertex
+            g.vertex(x, floorY - textureHeight/2, 0, 0, 0)
+            // Bottom-left vertex
+            g.vertex(x, floorY + textureHeight/2, 0, 0, 1)
+
+            // Top-right vertex
+            g.vertex(x + textureWidth, floorY - textureHeight/2, 0, 1, 0)
+            // Bottom-right vertex
+            g.vertex(x + textureWidth, floorY + textureHeight/2, 0, 1, 1)
         }
-        
+
+        g.endShape()
         g.pop()
 
         // Draw WebGL canvas to main canvas
