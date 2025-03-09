@@ -58,6 +58,6 @@ export const gameState: GameState = {
         dotGap: 4,
         dotOffset: 420
     },
-    currentPage: "main",
+    currentPage: "playing",
     isPaused: false
 }
