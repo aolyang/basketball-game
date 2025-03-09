@@ -11,9 +11,12 @@ import { renderMainPage } from "./ui/screens/main"
 import { calculateCanvasSize, setupDPIScaling } from "./utils/dpi"
 import { initSlimeAnimations, preloadSlimeAnimations } from "./utils/slimeAnimation"
 
+// 全局控制面板实例，使其可以在其他地方访问
+export let controlPanel: ControlPanel
+
 export default function sketch(p5: P5) {
     let font: P5.Font
-    const controlPanel = new ControlPanel()
+    controlPanel = new ControlPanel()
     const fpsCounter = new FPSCounter(p5)
 
     p5.preload = () => {
@@ -52,6 +55,8 @@ export default function sketch(p5: P5) {
             handleMainPageKeyboard(p5)
         } else if (gameState.currentPage === "playing") {
             handleGameKeyboard(p5)
+            // 更新控制面板显示
+            controlPanel.updateDisplay()
         }
     }
 
