@@ -21,7 +21,7 @@ export function logGameStateSnapshot(): void {
 
 /**
  * 将当前gameState的特定部分输出到控制台
- * @param section 要输出的部分，如"court", "canvas"等
+ * @param section 要输出的部分，如"court", "canvas", "scene"等
  */
 export function logGameStateSection(section: keyof typeof gameState): void {
     if (section in gameState) {
@@ -38,6 +38,13 @@ export function logGameStateSection(section: keyof typeof gameState): void {
  */
 export function logCourtState(): void {
     logGameStateSection("court")
+}
+
+/**
+ * 将当前场景状态输出到控制台
+ */
+export function logSceneState(): void {
+    logGameStateSection("scene")
 }
 
 /**

@@ -34,6 +34,23 @@ interface CourtConfig {
     originZ: number
 }
 
+// Scene types for different game environments
+type SceneType = "forest" | "city" | "beach" | "mountain" | "indoor"
+
+interface FloorConfig {
+    // Horizontal offset for floor texture (0-1)
+    offsetX: number
+    // Vertical position from bottom (in pixels)
+    offsetY: number
+}
+
+interface SceneConfig {
+    // Current scene type
+    type: SceneType
+    // Floor configuration
+    floor: FloorConfig
+}
+
 type GamePage = "main" | "playing"
 
 export interface GameState {
@@ -43,6 +60,7 @@ export interface GameState {
     debug: DebugConfig
     paperTexture: PaperTextureConfig
     court: CourtConfig
+    scene: SceneConfig
     currentPage: GamePage
     isPaused: boolean
 }
@@ -76,5 +94,12 @@ export const gameState: GameState = {
         originX: 0, // 默认在左侧
         originY: 0.87, // 默认在底部
         originZ: 0.5
+    },
+    scene: {
+        type: "indoor",
+        floor: {
+            offsetX: 0,
+            offsetY: 0
+        }
     }
 }

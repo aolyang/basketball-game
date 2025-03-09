@@ -10,7 +10,7 @@ import { handleGameKeyboard, renderGamePage } from "./ui/screens/game"
 import { renderMainPage } from "./ui/screens/main"
 import { calculateCanvasSize, setupDPIScaling } from "./utils/dpi"
 import { preloadFloorTexture } from "./utils/floorTextureRenderer"
-import { logGameStateSnapshot, saveGameStateToFile } from "./utils/gameStateSnapshot"
+import { saveGameStateToFile } from "./utils/gameStateSnapshot"
 import { initSlimeAnimations, preloadSlimeAnimations } from "./utils/slimeAnimation"
 
 // 全局控制面板实例，使其可以在其他地方访问

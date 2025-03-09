@@ -1,7 +1,8 @@
 import { GUI } from "lil-gui"
 
 import { gameState } from "../../config/gameState"
-import { logCourtState,logGameStateSnapshot, saveGameStateToFile } from "../../utils/gameStateSnapshot"
+import { forceNextRender } from "../../utils/floorTextureRenderer"
+import { logCourtState, logGameStateSnapshot, logSceneState, saveGameStateToFile } from "../../utils/gameStateSnapshot"
 
 export class ControlPanel {
     private gui: GUI
@@ -12,6 +13,21 @@ export class ControlPanel {
 
         const debug = this.gui.addFolder("Debug")
         debug.add(gameState.debug, "showFPS").name("Show FPS")
+
+        // Add scene controls
+        const scene = this.gui.addFolder("Scene")
+        scene.add(gameState.scene, "type", ["forest", "city", "beach", "mountain", "indoor"])
+            .name("Scene Type")
+            .onChange(() => forceNextRender())
+
+        // Add floor controls
+        const floor = scene.addFolder("Floor")
+        floor.add(gameState.scene.floor, "offsetX", 0, 240, 1)
+            .name("Horizontal Offset")
+            .onChange(() => forceNextRender())
+        floor.add(gameState.scene.floor, "offsetY", -100, 100, 1)
+            .name("Vertical Position")
+            .onChange(() => forceNextRender())
 
         // 添加快照功能
         const snapshot = this.gui.addFolder("Snapshot")
@@ -24,6 +40,10 @@ export class ControlPanel {
         }, "logCourt").name("Log Court State")
 
         snapshot.add({
+            logScene: () => logSceneState()
+        }, "logScene").name("Log Scene State")
+
+        snapshot.add({
             saveToFile: () => saveGameStateToFile()
         }, "saveToFile").name("Save State to File")
 
@@ -34,6 +54,7 @@ export class ControlPanel {
         paperTexture.addColor(gameState.paperTexture, "baseColor")
 
         debug.close()
+        scene.close()
         snapshot.close()
         paperTexture.close()
     }
