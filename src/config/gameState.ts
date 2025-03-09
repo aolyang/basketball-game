@@ -32,10 +32,6 @@ interface CourtConfig {
     originX: number
     originY: number
     originZ: number
-    // Animation control
-    enableAnimation: boolean
-    // Rendering mode
-    useWebGL: boolean
 }
 
 type GamePage = "main" | "playing"
@@ -75,14 +71,12 @@ export const gameState: GameState = {
         dotOffset: 42
     },
     court: {
-        rotationX: 0,
+        rotationX: 0.42,
         rotationY: 0,
         rotationZ: 0,
-        originX: 0.5, // 默认在中心点
-        originY: 0.5,
-        originZ: 0,
-        enableAnimation: false,
-        useWebGL: true
+        originX: 0, // 默认在左侧
+        originY: 0.87, // 默认在底部
+        originZ: 0.5
     },
     //curring is building game page, do not change here
     currentPage: "playing",

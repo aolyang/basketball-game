@@ -6,6 +6,7 @@ export class ControlPanel {
     private gui: GUI
     private isVisible = true
     private rotationFolder: GUI | null = null
+    private originFolder: GUI | null = null
 
     constructor() {
         this.gui = new GUI({ title: "Control Panel" })
@@ -21,50 +22,38 @@ export class ControlPanel {
 
         const court = this.gui.addFolder("Basketball Court")
 
-        court.add(gameState.court, "useWebGL").name("Use WebGL")
-
-        const animationController = court.add(gameState.court, "enableAnimation").name("Enable Animation")
-
         this.rotationFolder = court.addFolder("Manual Rotation")
 
-        const rotX = this.rotationFolder.add(gameState.court, "rotationX", -1, 1, 0.01).name("X Rotation")
-        const rotY = this.rotationFolder.add(gameState.court, "rotationY", -1, 1, 0.01).name("Y Rotation")
-        const rotZ = this.rotationFolder.add(gameState.court, "rotationZ", -1, 1, 0.01).name("Z Rotation")
+        const rotX = this.rotationFolder.add(gameState.court, "rotationX", -1, 1, 0.01).name("X Rotation (Pitch)")
+        const rotY = this.rotationFolder.add(gameState.court, "rotationY", -1, 1, 0.01).name("Y Rotation (Yaw)")
+        const rotZ = this.rotationFolder.add(gameState.court, "rotationZ", -1, 1, 0.01).name("Z Rotation (Roll)")
 
-        if (gameState.court.enableAnimation) {
-            rotX.disable()
-            rotY.disable()
-            rotZ.disable()
-        }
+        this.originFolder = court.addFolder("Rotation Origin")
+        const originX = this.originFolder.add(gameState.court, "originX", 0, 1, 0.01).name("X Origin (0=Left, 1=Right)")
+        const originY = this.originFolder.add(gameState.court, "originY", 0, 1, 0.01).name("Y Origin (0=Top, 1=Bottom)")
+        const originZ = this.originFolder.add(gameState.court, "originZ", -1, 1, 0.05).name("Z Origin (Height)")
+
+        this.originFolder.add({
+            resetOrigin: () => {
+                gameState.court.originX = 0
+                gameState.court.originY = 0.87
+                gameState.court.originZ = 0.5
+            }
+        }, "resetOrigin").name("Reset to Default")
 
         this.rotationFolder.add({
             resetRotation: () => {
-                gameState.court.rotationX = 0
+                gameState.court.rotationX = 0.42
                 gameState.court.rotationY = 0
                 gameState.court.rotationZ = 0
             }
-        }, "resetRotation").name("Reset Rotation")
-
-        animationController.onChange((value: boolean) => {
-            if (this.rotationFolder) {
-                this.rotationFolder.controllers.forEach(c => {
-                    if (c.property === "rotationX" || c.property === "rotationY" || c.property === "rotationZ") {
-                        value ? c.disable() : c.enable()
-                    }
-                })
-            }
-
-            if (!value) {
-                gameState.court.rotationX = 0
-                gameState.court.rotationY = 0
-                gameState.court.rotationZ = 0
-            }
-        })
+        }, "resetRotation").name("Reset to Default")
 
         debug.close()
         paperTexture.close()
         court.close()
         this.rotationFolder.close()
+        this.originFolder.close()
     }
 
     public toggle() {
@@ -93,6 +82,12 @@ export class ControlPanel {
 
         if (this.rotationFolder) {
             this.rotationFolder.controllers.forEach(controller => {
+                controller.updateDisplay()
+            })
+        }
+
+        if (this.originFolder) {
+            this.originFolder.controllers.forEach(controller => {
                 controller.updateDisplay()
             })
         }

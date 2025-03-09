@@ -40,11 +40,5 @@ export function handleGameKeyboard(p5: P5) {
     } else if (p5.keyCode === p5.ENTER && exitDialog.isVisible()) {
         gameState.currentPage = "main"
         exitDialog.hide()
-    } else if (p5.key === "a") {
-        // 切换动画
-        gameState.court.enableAnimation = !gameState.court.enableAnimation
-    } else if (p5.key === "w") {
-        // 切换WebGL模式
-        gameState.court.useWebGL = !gameState.court.useWebGL
     }
 }
