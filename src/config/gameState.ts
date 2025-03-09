@@ -35,7 +35,7 @@ interface CourtConfig {
 }
 
 // Scene types for different game environments
-type SceneType = "forest" | "city" | "beach" | "mountain" | "indoor"
+// type SceneType = "forest" | "city" | "beach" | "mountain" | "indoor"
 
 interface FloorConfig {
     // Horizontal offset for floor texture (0-1)
@@ -45,8 +45,6 @@ interface FloorConfig {
 }
 
 interface SceneConfig {
-    // Current scene type
-    type: SceneType
     // Floor configuration
     floor: FloorConfig
 }
@@ -96,7 +94,6 @@ export const gameState: GameState = {
         originZ: 0.5
     },
     scene: {
-        type: "indoor",
         floor: {
             offsetX: 0,
             offsetY: 0

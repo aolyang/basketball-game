@@ -16,9 +16,6 @@ export class ControlPanel {
 
         // Add scene controls
         const scene = this.gui.addFolder("Scene")
-        scene.add(gameState.scene, "type", ["forest", "city", "beach", "mountain", "indoor"])
-            .name("Scene Type")
-            .onChange(() => forceNextRender())
 
         // Add floor controls
         const floor = scene.addFolder("Floor")

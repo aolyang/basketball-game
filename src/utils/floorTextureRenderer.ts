@@ -13,7 +13,6 @@ let lastCanvasHeight = 0
 let lastRenderTime = 0
 let lastFloorOffsetX = 0
 let lastFloorOffsetY = 0
-let lastSceneType = ""
 let forceRender = true // Force first render
 
 /**
@@ -47,7 +46,6 @@ function initFloorCanvas(p5: P5): void {
 function hasParamsChanged(): boolean {
     const { width, height } = gameState.canvas
     const { offsetX, offsetY } = gameState.scene.floor
-    const sceneType = gameState.scene.type
 
     // First render or forced render
     if (forceRender) {
@@ -60,8 +58,7 @@ function hasParamsChanged(): boolean {
         lastCanvasWidth !== width ||
         lastCanvasHeight !== height ||
         lastFloorOffsetX !== offsetX ||
-        lastFloorOffsetY !== offsetY ||
-        lastSceneType !== sceneType
+        lastFloorOffsetY !== offsetY
 
     // Force update every 30 seconds
     const currentTime = Date.now()
@@ -76,13 +73,11 @@ function hasParamsChanged(): boolean {
 function updateCachedParams(): void {
     const { width, height } = gameState.canvas
     const { offsetX, offsetY } = gameState.scene.floor
-    const sceneType = gameState.scene.type
 
     lastCanvasWidth = width
     lastCanvasHeight = height
     lastFloorOffsetX = offsetX
     lastFloorOffsetY = offsetY
-    lastSceneType = sceneType
     lastRenderTime = Date.now()
 }
 
@@ -142,10 +137,10 @@ export function renderFloorTexture(p5: P5): void {
         
         // Calculate floor position
         // Position from bottom of screen, with offsetY adjustment
-        const floorY = height / 2 - textureHeight / 2 - offsetY
+        const floorY = height / 2 - textureHeight / 2 + offsetY
         
         // Calculate number of tiles needed to cover the width
-        const tilesNeeded = Math.ceil(width / textureWidth)
+        const tilesNeeded = Math.ceil(width / textureWidth) + 1 // Add one extra tile to ensure smooth scrolling
         
         g.push()
         
