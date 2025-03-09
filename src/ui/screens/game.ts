@@ -1,7 +1,15 @@
 import type P5 from "p5"
 
 import { gameState } from "../../config/gameState"
-import { renderBasketballCourt, forceNextRender } from "../../utils/basketballCourtWebGL"
+import {
+    firstBackboardConfig,
+    forceNextFirstBackboardRender,
+    forceNextSecondBackboardRender,
+    renderFirstBackboard,
+    renderSecondBackboard,
+    secondBackboardConfig
+} from "../../utils/basketballBackboards"
+import { forceNextRender,renderBasketballCourt } from "../../utils/basketballCourtWebGL"
 import { Dialog } from "../components/Dialog"
 
 const exitDialog = new Dialog({
@@ -27,9 +35,11 @@ const exitDialog = new Dialog({
 let pageLoaded = false
 
 export function renderGamePage(p5: P5) {
-    // 如果是首次加载页面，强制渲染篮球场
+    // 如果是首次加载页面，强制渲染篮球场和篮板
     if (!pageLoaded) {
         forceNextRender()
+        forceNextFirstBackboardRender()
+        forceNextSecondBackboardRender()
         pageLoaded = true
     }
 
@@ -38,6 +48,16 @@ export function renderGamePage(p5: P5) {
 
     // 绘制篮球场
     renderBasketballCourt(p5)
+
+    // 绘制第一个篮板（如果可见）
+    if (firstBackboardConfig.visible) {
+        renderFirstBackboard(p5)
+    }
+
+    // 绘制第二个篮板（如果可见）
+    if (secondBackboardConfig.visible) {
+        renderSecondBackboard(p5)
+    }
 
     exitDialog.render(p5)
 }

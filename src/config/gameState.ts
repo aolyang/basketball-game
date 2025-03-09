@@ -34,6 +34,25 @@ interface CourtConfig {
     originZ: number
 }
 
+interface BackboardConfig {
+    // Position (0-1, percentage of canvas dimensions)
+    positionX: number
+    positionY: number
+    positionZ: number
+    // Rotation (in radians)
+    rotationX: number
+    rotationY: number
+    rotationZ: number
+    // Rotation origin (0-1, percentage of backboard dimensions)
+    originX: number
+    originY: number
+    originZ: number
+    // Scale factor
+    scale: number
+    // Visibility
+    visible: boolean
+}
+
 type GamePage = "main" | "playing"
 
 interface GameState {
@@ -43,6 +62,7 @@ interface GameState {
     debug: DebugConfig
     paperTexture: PaperTextureConfig
     court: CourtConfig
+    backboard: BackboardConfig
     currentPage: GamePage
     isPaused: boolean
 }
@@ -78,7 +98,19 @@ export const gameState: GameState = {
         originY: 0.87, // 默认在底部
         originZ: 0.5
     },
-    //curring is building game page, do not change here
+    backboard: {
+        positionX: 0.1, // 默认在画布左侧
+        positionY: 0.71, // 默认在画布下方
+        positionZ: -0.25, // 默认向后偏移
+        rotationX: 0,
+        rotationY: -0.43, // 默认向左旋转
+        rotationZ: 0,
+        originX: 0.5, // 默认在篮板中心
+        originY: 0.5, // 默认在篮板中心
+        originZ: 0, // 默认在篮板表面
+        scale: 1,
+        visible: true
+    },
     currentPage: "playing",
     isPaused: false
 }
