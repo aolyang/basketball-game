@@ -76,14 +76,14 @@ export function renderPlayerSelect(p5: P5) {
     // Handle animation timing and page transition
     if (isSelectionAnimating) {
         const currentTime = p5.millis()
-        const elapsedTime = currentTime - selectionAnimationStartTime
+        const elapsedTime = currentTime - (selectionAnimationStartTime ?? currentTime)
 
         // Flash every 250ms (4 times per second)
         const shouldShow = Math.floor(elapsedTime / 250) % 2 === 0
 
         // Update flash count
         const newFlashCount = Math.floor(elapsedTime / 250)
-        if (newFlashCount > flashCount) {
+        if (newFlashCount > (flashCount ?? 0)) {
             gameState.player.flashCount = newFlashCount
         }
 

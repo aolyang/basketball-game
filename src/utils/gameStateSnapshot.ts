@@ -1,4 +1,5 @@
 import { gameState } from "../config/gameState"
+import { firstBackboardConfig } from "./basketballBackboards"
 
 /**
  * 创建并返回当前gameState的快照
@@ -37,7 +38,9 @@ export function logGameStateSection(section: keyof typeof gameState): void {
  * 将当前篮板状态输出到控制台
  */
 export function logBackboardState(): void {
-    logGameStateSection("backboard")
+    console.log(`=== First Backboard State ===`)
+    console.log(JSON.stringify(firstBackboardConfig, null, 2))
+    console.log("==========================")
 }
 
 /**
