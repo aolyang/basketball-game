@@ -71,7 +71,7 @@ export const gameState: GameState = {
         dotOffset: 42
     },
     court: {
-        rotationX: 0.42,
+        rotationX: 0.53,
         rotationY: 0,
         rotationZ: 0,
         originX: 0, // 默认在左侧

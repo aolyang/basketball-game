@@ -15,6 +15,7 @@ let lastOriginZ = 0
 let lastCanvasWidth = 0
 let lastCanvasHeight = 0
 let lastRenderTime = 0
+let forceRender = true // 首次渲染标志
 
 /**
  * 初始化WEBGL画布
@@ -177,20 +178,26 @@ function hasParamsChanged(): boolean {
     const { width, height } = gameState.canvas
     const { rotationX, rotationY, rotationZ, originX, originY, originZ } = gameState.court
 
+    // 首次渲染或强制渲染
+    if (forceRender) {
+        forceRender = false
+        return true
+    }
+
     // 检查参数是否发生变化
     const paramsChanged =
-        lastRotationX !== rotationX ||
-        lastRotationY !== rotationY ||
-        lastRotationZ !== rotationZ ||
-        lastOriginX !== originX ||
-        lastOriginY !== originY ||
-        lastOriginZ !== originZ ||
+        Math.abs(lastRotationX - rotationX) > 0.001 ||
+        Math.abs(lastRotationY - rotationY) > 0.001 ||
+        Math.abs(lastRotationZ - rotationZ) > 0.001 ||
+        Math.abs(lastOriginX - originX) > 0.001 ||
+        Math.abs(lastOriginY - originY) > 0.001 ||
+        Math.abs(lastOriginZ - originZ) > 0.001 ||
         lastCanvasWidth !== width ||
         lastCanvasHeight !== height
 
-    // 每500毫秒强制更新一次
+    // 每30秒强制更新一次，防止长时间不更新
     const currentTime = Date.now()
-    const timeChanged = (currentTime - lastRenderTime > 500)
+    const timeChanged = (currentTime - lastRenderTime > 30000)
 
     return paramsChanged || timeChanged
 }
@@ -211,6 +218,13 @@ function updateCachedParams(): void {
     lastCanvasWidth = width
     lastCanvasHeight = height
     lastRenderTime = Date.now()
+}
+
+/**
+ * 强制下一次渲染
+ */
+export function forceNextRender(): void {
+    forceRender = true
 }
 
 /**
@@ -244,6 +258,8 @@ export function renderBasketballCourt(p5: P5): void {
 
     // 在WEBGL画布上渲染3D球场
     if (courtCanvas) {
+        // 只有在参数发生变化时才调用渲染函数
+        console.log("Parameters changed, rendering basketball court")
         render3DBasketballCourt(courtCanvas)
 
         // 计算居中位置
