@@ -1,6 +1,7 @@
 import type P5 from "p5"
 
 import { gameState } from "../../config/gameState"
+import { renderBasketballCourt } from "../../utils/basketballCourt"
 import { Dialog } from "../components/Dialog.ts"
 
 interface CircleState {
@@ -54,6 +55,9 @@ function updateCircle(p5: P5) {
 }
 
 export function renderGamePage(p5: P5) {
+    // Draw the basketball court
+    renderBasketballCourt(p5)
+    
     updateCircle(p5)
 
     // Draw the circle
