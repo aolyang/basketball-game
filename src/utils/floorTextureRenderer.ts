@@ -3,7 +3,7 @@ import type P5 from "p5"
 import { gameState } from "../config/gameState"
 
 // Static constants
-export const FLOOR_HEIGHT_RATIO = 0.76 // Floor height is 65% of canvas height
+export const FLOOR_HEIGHT_RATIO = 0.76 // Floor height is 76% of canvas height
 
 // Cache WebGL canvas
 let floorCanvas: P5.Graphics | null = null
@@ -206,19 +206,19 @@ export function renderFloorTexture(p5: P5): void {
  */
 function drawFloorReferenceLine(p5: P5): void {
     const { width, height } = gameState.canvas
-    const defaultFloorY = height - (240 * FLOOR_HEIGHT_RATIO)
+    const defaultFloorY = height * FLOOR_HEIGHT_RATIO
 
     p5.push()
     // Draw a green line at the default floor height
     p5.stroke(0, 200, 0)
     p5.strokeWeight(1)
     p5.line(0, defaultFloorY, width, defaultFloorY)
-    
+
     // Add a small label
     p5.noStroke()
     p5.fill(0, 200, 0)
     p5.textSize(12)
     p5.textAlign(p5.LEFT, p5.CENTER)
-    p5.text(`${FLOOR_HEIGHT_RATIO * 100}%`, 5, defaultFloorY - 8)
+    p5.text(`${Math.round(FLOOR_HEIGHT_RATIO * 100)}%`, 5, defaultFloorY - 8)
     p5.pop()
 }

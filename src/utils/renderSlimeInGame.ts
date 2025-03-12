@@ -2,6 +2,7 @@ import type P5 from "p5"
 
 import { gameState } from "../config/gameState"
 import { getSlimeHitAnimation, getSlimeJumpAnimation,getSlimeMoveAnimation } from "./slimeAnimation"
+import { FLOOR_HEIGHT_RATIO } from "./floorTextureRenderer"
 
 // Cache last render parameters
 let lastCanvasWidth = 0
@@ -99,7 +100,88 @@ export function renderSlimesInGame(p5: P5): void {
     const slimeOffsetFromFloor = (effectiveSlimeHeight + bottomPadding) / height
 
     // Position the slime so its bottom touches the floor
-    const yPosition = floorOffsetY - slimeOffsetFromFloor
+    // Use FLOOR_HEIGHT_RATIO for consistent positioning
+    const yPosition = FLOOR_HEIGHT_RATIO - slimeOffsetFromFloor
+
+    // Draw all guide lines
+    p5.push()
+
+    // Common text settings
+    p5.textSize(14)
+    p5.textAlign(p5.LEFT, p5.CENTER)
+
+    // Always draw the floor line
+    p5.stroke(0, 0, 255)
+    p5.strokeWeight(3)
+    p5.line(0, FLOOR_HEIGHT_RATIO * height, width, FLOOR_HEIGHT_RATIO * height)
+    p5.noStroke()
+    p5.fill(0, 0, 255)
+    p5.text("Floor", 10, FLOOR_HEIGHT_RATIO * height - 10)
+
+    // Calculate positions for all lines
+    const slimeTopY = yPosition * height
+    const slimeBottomY = yPosition * height + (slimeMoveAnimation.frameHeight * scale)
+    const entityBottomY = yPosition * height + 
+        (slimeMoveAnimation.frameHeight * scale * slimeMoveAnimation.entityRatio) + 
+        bottomPadding
+
+    // Draw additional debug visualization if borders are enabled
+    if (showFrameBorders) {
+        // Slime top line (green)
+        p5.stroke(0, 255, 0)
+        p5.strokeWeight(2)
+        p5.line(0, slimeTopY, width, slimeTopY)
+        p5.noStroke()
+        p5.fill(0, 255, 0)
+        p5.text("Slime Top", 10, slimeTopY - 10)
+        
+        // Frame bottom line (magenta)
+        p5.stroke(255, 0, 255)
+        p5.strokeWeight(2)
+        p5.line(0, slimeBottomY, width, slimeBottomY)
+        p5.noStroke()
+        p5.fill(255, 0, 255)
+        p5.text("Frame Bottom", 10, slimeBottomY + 10)
+        
+        // Entity bottom line (yellow)
+        p5.stroke(255, 255, 0)
+        p5.strokeWeight(2)
+        p5.line(0, entityBottomY, width, entityBottomY)
+        p5.noStroke()
+        p5.fill(255, 255, 0)
+        p5.text("Entity Bottom", 10, entityBottomY + 10)
+        
+        // Current floor position (if different from FLOOR_HEIGHT_RATIO)
+        if (Math.abs(floorOffsetY - FLOOR_HEIGHT_RATIO) > 0.001) {
+            p5.stroke(255, 165, 0) // Orange
+            p5.strokeWeight(1)
+            p5.line(0, floorOffsetY * height, width, floorOffsetY * height)
+            p5.noStroke()
+            p5.fill(255, 165, 0)
+            p5.text(`Current Floor: ${Math.round(floorOffsetY * 100)}%`, 10, floorOffsetY * height - 10)
+        }
+    } else {
+        // When debug borders are disabled, still show minimal indicators on the left edge
+        const indicatorWidth = 20 // Width of the indicator marks
+        
+        // Slime top indicator (green)
+        p5.stroke(0, 255, 0)
+        p5.strokeWeight(2)
+        p5.line(0, slimeTopY, indicatorWidth, slimeTopY)
+        p5.noStroke()
+        p5.fill(0, 255, 0)
+        p5.text("ST", 5, slimeTopY - 10)
+        
+        // Entity bottom indicator (yellow)
+        p5.stroke(255, 255, 0)
+        p5.strokeWeight(2)
+        p5.line(0, entityBottomY, indicatorWidth, entityBottomY)
+        p5.noStroke()
+        p5.fill(255, 255, 0)
+        p5.text("EB", 5, entityBottomY + 10)
+    }
+    
+    p5.pop()
 
     // Render first slime (always present)
     // Position on left side for single player, or left-center for two players
