@@ -109,11 +109,11 @@ export const gameState: GameState = {
             offsetY: 0
         },
         ballNets: {
-            leftX: 0.07,
-            leftY: 0.5,
-            rightX: 0.93,
-            rightY: 0.5,
-            scale: 1
+            leftX: 0.03,
+            leftY: 0.4,
+            rightX: 0.97,
+            rightY: 0.4,
+            scale: 0.5
         }
     }
 }
