@@ -4,15 +4,24 @@ interface CanvasConfig {
     aspectRatio: number
 }
 
+interface SlimeConfig {
+    x: number
+    y: number
+    scale: number
+    score: number
+}
+
 interface PlayerConfig {
     selectedPlayer: number
     isSelectionAnimating?: boolean
     selectionAnimationStartTime?: number
     flashCount?: number
+    slimes: [SlimeConfig, SlimeConfig] // Array of two slimes for two players
 }
 
 interface DebugConfig {
     showFPS: boolean
+    showFrameBorders: boolean
 }
 
 interface PaperTextureConfig {
@@ -37,7 +46,7 @@ interface CourtConfig {
 interface FloorConfig {
     // Horizontal offset for floor texture (0-1)
     offsetX: number
-    // Vertical position from bottom (in pixels)
+    // Vertical position as percentage of canvas height (0-1, 0=top, 1=bottom)
     offsetY: number
 }
 
@@ -83,10 +92,25 @@ export const gameState: GameState = {
         aspectRatio: 16 / 9
     },
     player: {
-        selectedPlayer: 0
+        selectedPlayer: 1,
+        slimes: [
+            {
+                x: 0.2, // 20% from left
+                y: 0.8, // 80% from top
+                scale: 1.0,
+                score: 0
+            },
+            {
+                x: 0.8, // 80% from left
+                y: 0.8, // 80% from top
+                scale: 1.0,
+                score: 0
+            }
+        ]
     },
     debug: {
-        showFPS: true
+        showFPS: true,
+        showFrameBorders: true
     },
     paperTexture: {
         noiseScale: 0.015,
@@ -106,7 +130,7 @@ export const gameState: GameState = {
     scene: {
         floor: {
             offsetX: 0,
-            offsetY: 0
+            offsetY: 0.8
         },
         ballNets: {
             leftX: 0.03,

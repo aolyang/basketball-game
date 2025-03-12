@@ -27,13 +27,19 @@ interface FrameAnimationOptions {
      * Whether the animation should loop
      */
     loop?: boolean
+    /**
+     * The ratio of the actual entity size to the frame size (0-1)
+     * For example, if the character only takes up 80% of the frame, this would be 0.8
+     */
+    entityRatio?: number
 }
 
 export class FrameAnimation {
     private image: P5.Image
-    private frameWidth: number
-    private frameHeight: number
-    private frameCount: number
+    readonly frameWidth: number
+    readonly frameHeight: number
+    readonly frameCount: number
+    readonly entityRatio: number
     private frameRate: number
     private loop: boolean
     private currentFrame: number = 0
@@ -42,9 +48,11 @@ export class FrameAnimation {
 
     constructor(options: FrameAnimationOptions) {
         this.image = options.image
-        this.frameWidth = options.frameWidth
-        this.frameHeight = options.frameHeight
-        this.frameCount = options.frameCount
+        this.frameWidth = options.frameWidth || this.image.width
+        this.frameHeight = options.frameHeight || this.image.width
+        this.frameCount = options.frameCount || this.image.height / this.image.width
+        this.entityRatio = options.entityRatio || 0.8 // Default to 80% if not specified
+
         this.frameRate = options.frameRate || 12 // Default to 12 FPS
         this.loop = options.loop !== undefined ? options.loop : true // Default to looping
     }
@@ -80,13 +88,14 @@ export class FrameAnimation {
      * @param widthPercent Optional width as a percentage of canvas width (0-1)
      * @param heightPercent Optional height as a percentage of canvas height (0-1)
      * @param filter Optional filter to apply to the image (e.g., tint)
+     * @param showBorders Optional flag to show frame borders for debugging
      */
     draw(p5: P5, xPercent: number, yPercent: number, widthPercent?: number, heightPercent?: number, filter?: {
         r: number
         g: number
         b: number
         a?: number
-    }): void {
+    }, showBorders?: boolean): void {
         // Calculate the source rectangle y-position based on current frame
         const sourceY = Math.floor(this.currentFrame) * this.frameHeight
 
@@ -137,6 +146,44 @@ export class FrameAnimation {
             x, y + verticalOffset, destWidth, destHeight, // Destination rectangle with vertical adjustment
             0, sourceY, this.frameWidth, this.frameHeight // Source rectangle
         )
+
+        // Draw borders if requested
+        if (showBorders) {
+            p5.noFill()
+            p5.stroke(255, 0, 0) // Red stroke for borders
+            p5.strokeWeight(2)
+
+            // Draw border around the frame
+            p5.rect(x, y + verticalOffset, destWidth, destHeight)
+
+            // Draw source frame indicator
+            p5.stroke(0, 255, 0) // Green stroke for source frame
+            p5.line(x, y + verticalOffset, x + destWidth, y + verticalOffset + destHeight) // Diagonal line
+            p5.line(x + destWidth, y + verticalOffset, x, y + verticalOffset + destHeight) // Diagonal line
+
+            // Draw entity boundaries based on entityRatio
+            const entityHeight = destHeight * this.entityRatio
+            const emptySpaceHeight = destHeight * (1 - this.entityRatio)
+            const entityTopY = y + verticalOffset + (emptySpaceHeight / 2)
+            const entityBottomY = entityTopY + entityHeight
+
+            // Draw entity top boundary (blue line)
+            p5.stroke(0, 100, 255)
+            p5.strokeWeight(2)
+            p5.line(x, entityTopY, x + destWidth, entityTopY)
+
+            // Draw entity bottom boundary (magenta line)
+            p5.stroke(255, 0, 255)
+            p5.strokeWeight(2)
+            p5.line(x, entityBottomY, x + destWidth, entityBottomY)
+
+            // Draw frame number and entity ratio
+            p5.noStroke()
+            p5.fill(255, 255, 0) // Yellow text
+            p5.textSize(16)
+            p5.textAlign(p5.CENTER, p5.CENTER)
+            p5.text(`Frame: ${this.currentFrame} (${Math.round(this.entityRatio * 100)}%)`, x + destWidth/2, y + verticalOffset - 10)
+        }
 
         p5.pop()
     }

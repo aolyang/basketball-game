@@ -4,7 +4,7 @@ import { gameState } from "../../config/gameState"
 import { renderCopyright } from "../../utils/copyright"
 import { renderGameTitle } from "../../utils/gameTitle"
 import { renderPlayerSelect } from "../../utils/playerSelect"
-import { renderSlimeJumpAnimation } from "../../utils/slimeAnimation"
+import { renderSlimeJumpAnimation } from "../../utils/renderSlimeInMainPage"
 import { drawPaperTexture } from "../effects/PaperTexture"
 
 export function renderMainPage(p5: P5) {

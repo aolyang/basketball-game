@@ -2,6 +2,9 @@ import type P5 from "p5"
 
 import { gameState } from "../config/gameState"
 
+// Static constants
+export const FLOOR_HEIGHT_RATIO = 0.65 // Floor height is 65% of canvas height
+
 // Cache WebGL canvas
 let floorCanvas: P5.Graphics | null = null
 // Cache texture
@@ -13,6 +16,7 @@ let lastCanvasHeight = 0
 let lastRenderTime = 0
 let lastFloorOffsetX = 0
 let lastFloorOffsetY = 0
+let lastShowFrameBorders = false
 let forceRender = true // Force first render
 
 /**
@@ -46,6 +50,7 @@ function initFloorCanvas(p5: P5): void {
 function hasParamsChanged(): boolean {
     const { width, height } = gameState.canvas
     const { offsetX, offsetY } = gameState.scene.floor
+    const { showFrameBorders } = gameState.debug
 
     // First render or forced render
     if (forceRender) {
@@ -58,7 +63,8 @@ function hasParamsChanged(): boolean {
         lastCanvasWidth !== width ||
         lastCanvasHeight !== height ||
         lastFloorOffsetX !== offsetX ||
-        lastFloorOffsetY !== offsetY
+        lastFloorOffsetY !== offsetY ||
+        lastShowFrameBorders !== showFrameBorders
 
     // Force update every 30 seconds
     const currentTime = Date.now()
@@ -73,11 +79,13 @@ function hasParamsChanged(): boolean {
 function updateCachedParams(): void {
     const { width, height } = gameState.canvas
     const { offsetX, offsetY } = gameState.scene.floor
+    const { showFrameBorders } = gameState.debug
 
     lastCanvasWidth = width
     lastCanvasHeight = height
     lastFloorOffsetX = offsetX
     lastFloorOffsetY = offsetY
+    lastShowFrameBorders = showFrameBorders
     lastRenderTime = Date.now()
 }
 
@@ -90,7 +98,7 @@ export function forceNextRender(): void {
 
 /**
  * Render floor texture
- * Renders the texture at the bottom of the screen with horizontal tiling
+ * Renders the texture at the specified position with horizontal tiling
  * @param p5 p5 instance
  */
 export function renderFloorTexture(p5: P5): void {
@@ -130,14 +138,15 @@ export function renderFloorTexture(p5: P5): void {
 
         const { width, height } = gameState.canvas
         const { offsetX, offsetY } = gameState.scene.floor
+        const { showFrameBorders } = gameState.debug
 
         // Fixed texture dimensions (240x240)
         const textureWidth = 240
         const textureHeight = 240
 
-        // Calculate floor position
-        // Position from bottom of screen, with offsetY adjustment
-        const floorY = height / 2 - textureHeight / 2 + offsetY
+        // Calculate floor position based on canvas height percentage
+        // offsetY is now a percentage (0-1) where 0 is top and 1 is bottom
+        const floorY = (height * offsetY) - (height / 2)
 
         // Calculate number of tiles needed to cover the width
         const tilesNeeded = Math.ceil(width / textureWidth) + 1 // Add one extra tile to ensure smooth scrolling
@@ -148,9 +157,15 @@ export function renderFloorTexture(p5: P5): void {
         g.textureMode(p5.NORMAL)
         g.textureWrap(p5.REPEAT, p5.CLAMP)
 
-        // Disable stroke to remove black borders
-        g.noStroke()
-        g.noFill()
+        // Apply stroke settings based on debug setting
+        if (showFrameBorders) {
+            g.stroke(255, 0, 0) // Red stroke for borders
+            g.strokeWeight(2)
+            g.noFill()
+        } else {
+            g.noStroke()
+            g.noFill()
+        }
 
         // Use custom rendering to avoid borders between tiles
         g.beginShape(p5.TRIANGLE_STRIP)

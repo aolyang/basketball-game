@@ -13,14 +13,16 @@ export class ControlPanel {
 
         const debug = this.gui.addFolder("Debug")
         debug.add(gameState.debug, "showFPS").name("Show FPS")
+        debug.add(gameState.debug, "showFrameBorders").name("Show Frame Borders")
+            .onChange(() => forceNextRender())
 
         // Add floor controls
         const floor = this.gui.addFolder("Floor")
         floor.add(gameState.scene.floor, "offsetX", 0, 240, 1)
             .name("Horizontal Offset")
             .onChange(() => forceNextRender())
-        floor.add(gameState.scene.floor, "offsetY", -100, 100, 1)
-            .name("Vertical Position")
+        floor.add(gameState.scene.floor, "offsetY", 0, 1, 0.01)
+            .name("Vertical Position (0-1)")
             .onChange(() => forceNextRender())
             
         // Add ball nets controls
