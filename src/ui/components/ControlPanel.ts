@@ -15,6 +15,12 @@ export class ControlPanel {
         debug.add(gameState.debug, "showFPS").name("Show FPS")
         debug.add(gameState.debug, "showFrameBorders").name("Show Frame Borders")
             .onChange(() => forceNextRender())
+        debug.add(gameState.debug, "lowFrameRate").name("Low Frame Rate")
+            .onChange(() => {
+                // 当切换帧率模式时，强制重新渲染
+                forceNextRender()
+                // 可以在这里添加其他需要在帧率切换时执行的逻辑
+            })
 
         // Add floor controls
         const floor = this.gui.addFolder("Floor")

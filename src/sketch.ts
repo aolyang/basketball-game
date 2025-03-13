@@ -17,6 +17,10 @@ import { initSlimeAnimations, preloadSlimeAnimations } from "./utils/slimeAnimat
 // 全局控制面板实例，使其可以在其他地方访问
 export let controlPanel: ControlPanel
 
+// 帧率配置
+const HIGH_FRAME_RATE = 60
+const LOW_FRAME_RATE = 24
+
 export default function sketch(p5: P5) {
     let font: P5.Font
     controlPanel = new ControlPanel()
@@ -33,7 +37,9 @@ export default function sketch(p5: P5) {
         p5.createCanvas(gameState.canvas.width, gameState.canvas.height)
         setupDPIScaling(p5)
         p5.textFont(font)
-        p5.frameRate(gameState.fps)
+        // 初始化时根据低帧率设置选择帧率
+        const initialFrameRate = gameState.debug.lowFrameRate ? LOW_FRAME_RATE : HIGH_FRAME_RATE
+        p5.frameRate(initialFrameRate)
         initSlimeAnimations()
     }
 
@@ -45,7 +51,11 @@ export default function sketch(p5: P5) {
         } else {
             renderGamePage(p5)
         }
-        p5.frameRate(24)
+        
+        // 根据低帧率设置动态调整帧率
+        const targetFrameRate = gameState.debug.lowFrameRate ? LOW_FRAME_RATE : HIGH_FRAME_RATE
+        p5.frameRate(targetFrameRate)
+        
         fpsCounter.update()
         fpsCounter.draw()
     }

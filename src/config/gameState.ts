@@ -22,6 +22,7 @@ interface PlayerConfig {
 interface DebugConfig {
     showFPS: boolean
     showFrameBorders: boolean
+    lowFrameRate: boolean // 低帧率模式开关
 }
 
 interface PaperTextureConfig {
@@ -110,7 +111,8 @@ export const gameState: GameState = {
     },
     debug: {
         showFPS: true,
-        showFrameBorders: true
+        showFrameBorders: true,
+        lowFrameRate: true // 默认启用低帧率模式
     },
     paperTexture: {
         noiseScale: 0.015,
