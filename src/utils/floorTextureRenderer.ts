@@ -202,23 +202,29 @@ export function renderFloorTexture(p5: P5): void {
 
 /**
  * Draw a reference line at the default floor height (FLOOR_HEIGHT_RATIO)
+ * and current floor position if different
  * @param p5 The p5 instance
  */
 function drawFloorReferenceLine(p5: P5): void {
     const { width, height } = gameState.canvas
-    const defaultFloorY = height * FLOOR_HEIGHT_RATIO
+    const { offsetY } = gameState.scene.floor
+    const currentFloorY = height * offsetY
 
     p5.push()
-    // Draw a green line at the default floor height
-    p5.stroke(0, 200, 0)
-    p5.strokeWeight(1)
-    p5.line(0, defaultFloorY, width, defaultFloorY)
 
-    // Add a small label
-    p5.noStroke()
-    p5.fill(0, 200, 0)
-    p5.textSize(12)
+    // Common text settings
+    p5.textSize(14)
     p5.textAlign(p5.LEFT, p5.CENTER)
-    p5.text(`${Math.round(FLOOR_HEIGHT_RATIO * 100)}%`, 5, defaultFloorY - 8)
+
+    // Draw current floor position if different from standard
+    if (Math.abs(offsetY - FLOOR_HEIGHT_RATIO) > 0.001) {
+        p5.stroke(255, 165, 0) // Orange
+        p5.strokeWeight(1)
+        p5.line(0, currentFloorY, width, currentFloorY)
+        p5.noStroke()
+        p5.fill(255, 165, 0)
+        p5.text(`Current: ${Math.round(offsetY * 100)}%`, 10, currentFloorY - 10)
+    }
+
     p5.pop()
 }

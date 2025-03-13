@@ -45,7 +45,7 @@ export default function sketch(p5: P5) {
         } else {
             renderGamePage(p5)
         }
-
+        p5.frameRate(24)
         fpsCounter.update()
         fpsCounter.draw()
     }
