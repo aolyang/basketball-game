@@ -49,6 +49,8 @@ interface FloorConfig {
     offsetX: number
     // Vertical position as percentage of canvas height (0-1, 0=top, 1=bottom)
     offsetY: number
+    // Slime bottom position as percentage of floor height (0=top, 1=bottom)
+    contentRatio: number
 }
 
 interface BallNetConfig {
@@ -132,7 +134,8 @@ export const gameState: GameState = {
     scene: {
         floor: {
             offsetX: 0,
-            offsetY: 0.8
+            offsetY: 0.8,
+            contentRatio: 0.34
         },
         ballNets: {
             leftX: 0.03,

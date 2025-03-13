@@ -2,9 +2,6 @@ import type P5 from "p5"
 
 import { gameState } from "../config/gameState"
 
-// Static constants
-export const FLOOR_HEIGHT_RATIO = 0.76 // Floor height is 76% of canvas height
-
 // Cache WebGL canvas
 let floorCanvas: P5.Graphics | null = null
 // Cache texture
@@ -16,6 +13,7 @@ let lastCanvasHeight = 0
 let lastRenderTime = 0
 let lastFloorOffsetX = 0
 let lastFloorOffsetY = 0
+let lastContentRatio = 0
 let lastShowFrameBorders = false
 let forceRender = true // Force first render
 
@@ -49,7 +47,7 @@ function initFloorCanvas(p5: P5): void {
  */
 function hasParamsChanged(): boolean {
     const { width, height } = gameState.canvas
-    const { offsetX, offsetY } = gameState.scene.floor
+    const { offsetX, offsetY, contentRatio } = gameState.scene.floor
     const { showFrameBorders } = gameState.debug
 
     // First render or forced render
@@ -64,6 +62,7 @@ function hasParamsChanged(): boolean {
         lastCanvasHeight !== height ||
         lastFloorOffsetX !== offsetX ||
         lastFloorOffsetY !== offsetY ||
+        lastContentRatio !== contentRatio ||
         lastShowFrameBorders !== showFrameBorders
 
     // Force update every 30 seconds
@@ -78,13 +77,14 @@ function hasParamsChanged(): boolean {
  */
 function updateCachedParams(): void {
     const { width, height } = gameState.canvas
-    const { offsetX, offsetY } = gameState.scene.floor
+    const { offsetX, offsetY, contentRatio } = gameState.scene.floor
     const { showFrameBorders } = gameState.debug
 
     lastCanvasWidth = width
     lastCanvasHeight = height
     lastFloorOffsetX = offsetX
     lastFloorOffsetY = offsetY
+    lastContentRatio = contentRatio
     lastShowFrameBorders = showFrameBorders
     lastRenderTime = Date.now()
 }
@@ -151,6 +151,9 @@ export function renderFloorTexture(p5: P5): void {
         // offsetY is now a percentage (0-1) where 0 is top and 1 is bottom
         const floorY = (height * offsetY) - (height / 2)
 
+        // Calculate floor top position (current floor position minus half texture height)
+        const floorTopY = floorY - (textureHeight / 2)
+
         // Calculate number of tiles needed to cover the width
         const tilesNeeded = Math.ceil(width / textureWidth) + 1 // Add one extra tile to ensure smooth scrolling
 
@@ -201,30 +204,68 @@ export function renderFloorTexture(p5: P5): void {
 }
 
 /**
- * Draw a reference line at the default floor height (FLOOR_HEIGHT_RATIO)
+ * Draw a reference line at the floor height based on content ratio
  * and current floor position if different
  * @param p5 The p5 instance
  */
 function drawFloorReferenceLine(p5: P5): void {
     const { width, height } = gameState.canvas
-    const { offsetY } = gameState.scene.floor
+    const { offsetY, contentRatio } = gameState.scene.floor
+    const { showFrameBorders } = gameState.debug
+
+    // Fixed texture dimensions (240x240)
+    const textureHeight = 240
+
+    // Calculate current floor position (center of texture)
     const currentFloorY = height * offsetY
 
-    p5.push()
+    // Calculate floor top position (current floor position minus half texture height)
+    const floorTopY = currentFloorY - (textureHeight / 2)
 
+    // Calculate floor real position based on contentRatio (0 = top, 1 = bottom)
+    const floorRealY = floorTopY + (textureHeight * contentRatio)
+
+    p5.push()
     // Common text settings
     p5.textSize(14)
     p5.textAlign(p5.LEFT, p5.CENTER)
 
-    // Draw current floor position if different from standard
-    if (Math.abs(offsetY - FLOOR_HEIGHT_RATIO) > 0.001) {
-        p5.stroke(255, 165, 0) // Orange
+    // Only draw debug lines if showFrameBorders is enabled
+    if (showFrameBorders) {
+        // Draw the floor top edge
+        p5.stroke(128, 128, 128) // Gray
         p5.strokeWeight(1)
-        p5.line(0, currentFloorY, width, currentFloorY)
+        p5.line(0, floorTopY, width, floorTopY)
         p5.noStroke()
-        p5.fill(255, 165, 0)
-        p5.text(`Current: ${Math.round(offsetY * 100)}%`, 10, currentFloorY - 10)
+        p5.fill(128, 128, 128)
+        p5.text("Floor Top", 10, floorTopY - 10)
+
+        // Draw the floor real line
+        p5.stroke(0, 255, 0) // Green
+        p5.strokeWeight(2)
+        p5.line(0, floorRealY, width, floorRealY)
+        p5.noStroke()
+        p5.fill(0, 255, 0)
+        p5.text(`Floor Real: ${Math.round(contentRatio * 100)}%`, 10, floorRealY - 10)
     }
+
+    // Draw a reference line at 50% height
+    const halfwayY = height * 0.5
+    p5.stroke(128, 128, 128) // Gray
+    p5.strokeWeight(1)
+
+    // Draw dashed line manually
+    const dashLength = 5
+    const gapLength = 5
+    let x = 0
+    while (x < width) {
+        p5.line(x, halfwayY, x + dashLength, halfwayY)
+        x += dashLength + gapLength
+    }
+
+    p5.noStroke()
+    p5.fill(128, 128, 128)
+    p5.text("50%", 10, halfwayY - 10)
 
     p5.pop()
 }
