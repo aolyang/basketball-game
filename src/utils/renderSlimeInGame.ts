@@ -1,7 +1,7 @@
 import type P5 from "p5"
 
-import { FLOOR_HEIGHT_RATIO } from "./floorTextureRenderer"
 import { gameState } from "../config/gameState"
+import { FLOOR_HEIGHT } from "./floorTextureRenderer"
 import { getSlimeHitAnimation, getSlimeJumpAnimation, getSlimeMoveAnimation } from "./slimeAnimation"
 
 // Cache last render parameters
@@ -80,28 +80,17 @@ export function renderSlimesInGame(p5: P5): void {
     const { selectedPlayer } = gameState.player
     const { showFrameBorders } = gameState.debug
     const { width, height } = gameState.canvas
+    const { contentRatio, offsetY: floorOffsetY } = gameState.scene.floor
 
     // Scale factor for the sprite (relative to canvas width)
     const scale = 0.15
 
-    // Get floor position from gameState (0-1 percentage of canvas height)
-    const floorOffsetY = gameState.scene.floor.offsetY
+    const currentFloorY = height * floorOffsetY
+    const floorTopY = currentFloorY - (FLOOR_HEIGHT / 2)
 
-    // Calculate the effective height of the slime entity within the frame
-    // Consider both the scale and the entity ratio
-    const effectiveSlimeHeight = slimeMoveAnimation.frameHeight * scale * slimeMoveAnimation.entityRatio
+    const floorRealYPercent = floorTopY + (FLOOR_HEIGHT * contentRatio)
 
-    // Calculate the offset needed to position the slime's bottom at the floor level
-    // We need to account for the empty space in the frame
-    const emptySpaceRatio = 1 - slimeMoveAnimation.entityRatio
-    const bottomPadding = (slimeMoveAnimation.frameHeight * scale * emptySpaceRatio) / 2
-
-    // Calculate the normalized offset (as percentage of canvas height)
-    const slimeOffsetFromFloor = (effectiveSlimeHeight + bottomPadding) / height
-
-    // Position the slime so its bottom touches the floor
-    // Use current floor position from gameState
-    const yPosition = floorOffsetY - slimeOffsetFromFloor
+    const yPosition = floorRealYPercent / height - 0.15 + (slimeMoveAnimation.entityOffsetBottom * scale)
 
     // Render first slime (always present)
     // Position on left side for single player, or left-center for two players

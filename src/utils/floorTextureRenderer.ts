@@ -17,6 +17,7 @@ let lastContentRatio = 0
 let lastShowFrameBorders = false
 let forceRender = true // Force first render
 
+export const FLOOR_HEIGHT = 240
 /**
  * Preload floor texture
  * @param p5 p5 instance
@@ -213,17 +214,14 @@ function drawFloorReferenceLine(p5: P5): void {
     const { offsetY, contentRatio } = gameState.scene.floor
     const { showFrameBorders } = gameState.debug
 
-    // Fixed texture dimensions (240x240)
-    const textureHeight = 240
-
     // Calculate current floor position (center of texture)
     const currentFloorY = height * offsetY
 
     // Calculate floor top position (current floor position minus half texture height)
-    const floorTopY = currentFloorY - (textureHeight / 2)
+    const floorTopY = currentFloorY - (FLOOR_HEIGHT / 2)
 
     // Calculate floor real position based on contentRatio (0 = top, 1 = bottom)
-    const floorRealY = floorTopY + (textureHeight * contentRatio)
+    const floorRealY = floorTopY + (FLOOR_HEIGHT * contentRatio)
 
     p5.push()
     // Common text settings

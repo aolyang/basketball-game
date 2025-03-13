@@ -42,7 +42,8 @@ export function initSlimeAnimations(): void {
         frameWidth: slimeJumpImg.width,
         frameHeight: slimeJumpImg.width,
         frameCount: jumpFrameCount,
-        entityRatio: 0.7 // Slime takes up about 70% of the frame height
+        entityOffsetTop: 0.15, // Slime starts 15% from the top of the frame
+        entityOffsetBottom: 0.12 // Slime ends 15% from the bottom of the frame
     })
 
     slimeHitAnimation = new FrameAnimation({
@@ -50,7 +51,8 @@ export function initSlimeAnimations(): void {
         frameWidth: slimeHitImg.width,
         frameHeight: slimeHitImg.width,
         frameCount: hitFrameCount,
-        entityRatio: 0.7 // Slime takes up about 70% of the frame height
+        entityOffsetTop: 0.15, // Slime starts 15% from the top of the frame
+        entityOffsetBottom: 0.15 // Slime ends 15% from the bottom of the frame
     })
 
     slimeMoveAnimation = new FrameAnimation({
@@ -58,7 +60,8 @@ export function initSlimeAnimations(): void {
         frameWidth: slimeMoveImg.width,
         frameHeight: slimeMoveImg.width,
         frameCount: moveFrameCount,
-        entityRatio: 0.7 // Slime takes up about 70% of the frame height
+        entityOffsetTop: 0.15, // Slime starts 15% from the top of the frame
+        entityOffsetBottom: 0.15 // Slime ends 15% from the bottom of the frame
     })
 }
 
