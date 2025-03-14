@@ -18,6 +18,10 @@ interface SlimeConfig {
     isHitting: boolean
     hitStartTime: number
     hitDuration: number
+    // Charge-related properties
+    isCharging: boolean
+    chargeStartTime: number
+    chargeLevel: number
 }
 
 interface PhysicsConfig {
@@ -129,7 +133,10 @@ export const gameState: GameState = {
                 baseY: 0.8, // Store the base Y position for returning after jump
                 isHitting: false,
                 hitStartTime: 0,
-                hitDuration: 300 // Hit animation duration in milliseconds
+                hitDuration: 300, // Hit animation duration in milliseconds
+                isCharging: false,
+                chargeStartTime: 0,
+                chargeLevel: 0
             },
             {
                 x: 0.8, // 80% from left
@@ -142,7 +149,10 @@ export const gameState: GameState = {
                 baseY: 0.8, // Store the base Y position for returning after jump
                 isHitting: false,
                 hitStartTime: 0,
-                hitDuration: 300 // Hit animation duration in milliseconds
+                hitDuration: 300, // Hit animation duration in milliseconds
+                isCharging: false,
+                chargeStartTime: 0,
+                chargeLevel: 0
             }
         ]
     },

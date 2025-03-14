@@ -139,6 +139,11 @@ export function renderSlimesInGame(p5: P5): void {
     let player1Animation = slimeMoveAnimation
     if (player1Slime.isHitting && slimeHitAnimation) {
         player1Animation = slimeHitAnimation
+        
+        // If charging, force the hit animation to stay on the last frame
+        if (player1Slime.isCharging) {
+            slimeHitAnimation.forceLastFrame();
+        }
     } else if (player1Slime.isJumping) {
         player1Animation = slimeJumpAnimation
     }
@@ -153,6 +158,58 @@ export function renderSlimesInGame(p5: P5): void {
         undefined, // no tint
         showFrameBorders // show borders if debug setting is enabled
     )
+    
+    // Draw charging indicator (inverted triangle) for player 1 if charging
+    if (player1Slime.isCharging) {
+        // Calculate position to the left of the slime
+        const triangleX = (player1Slime.x - scale * 0.5) * width;
+        const triangleY = player1Slime.y * height;
+        
+        // Fixed size for the triangle with half width
+        const triangleSize = width * 0.05; // Fixed height of the triangle
+        const triangleWidth = triangleSize / 2; // Half width as requested
+        
+        // Create a smaller graphics buffer just for the triangle
+        const triangleBuffer = p5.createGraphics(triangleWidth, triangleSize);
+        
+        // Draw the triangle in the buffer
+        triangleBuffer.push();
+        triangleBuffer.noStroke();
+        triangleBuffer.translate(triangleWidth/2, 0); // Center the triangle horizontally
+        
+        // Draw white background triangle
+        triangleBuffer.fill(255, 255, 255, 220); // White with some transparency
+        triangleBuffer.beginShape();
+        triangleBuffer.vertex(0, triangleSize); // Bottom point
+        triangleBuffer.vertex(-triangleWidth/2, 0); // Top left
+        triangleBuffer.vertex(triangleWidth/2, 0); // Top right
+        triangleBuffer.endShape(triangleBuffer.CLOSE);
+        
+        // Only draw the filled portion if there is some charge
+        if (player1Slime.chargeLevel > 0) {
+            // Calculate fill height based on charge level (fills from bottom to top)
+            const fillHeight = triangleSize * player1Slime.chargeLevel;
+            
+            // Draw the green fill
+            triangleBuffer.fill(0, 255, 0, 200); // Green with some transparency
+            triangleBuffer.beginShape();
+            triangleBuffer.vertex(0, triangleSize); // Bottom point
+            triangleBuffer.vertex(-triangleWidth/2 * (fillHeight/triangleSize), triangleSize - fillHeight); // Left point at fill level
+            triangleBuffer.vertex(triangleWidth/2 * (fillHeight/triangleSize), triangleSize - fillHeight); // Right point at fill level
+            triangleBuffer.endShape(triangleBuffer.CLOSE);
+        }
+        
+        triangleBuffer.pop();
+        
+        // Draw the triangle buffer to the main canvas
+        p5.push();
+        p5.imageMode(p5.CENTER);
+        p5.image(triangleBuffer, triangleX, triangleY);
+        p5.pop();
+        
+        // Clean up the buffer
+        triangleBuffer.remove();
+    }
 
     // If two players are selected, render the second slime
     if (selectedPlayer === 2) {
@@ -163,6 +220,11 @@ export function renderSlimesInGame(p5: P5): void {
         let player2Animation = slimeMoveAnimation
         if (player2Slime.isHitting && slimeHitAnimation) {
             player2Animation = slimeHitAnimation
+            
+            // If charging, force the hit animation to stay on the last frame
+            if (player2Slime.isCharging) {
+                slimeHitAnimation.forceLastFrame();
+            }
         } else if (player2Slime.isJumping) {
             player2Animation = slimeJumpAnimation
         }
@@ -181,5 +243,57 @@ export function renderSlimesInGame(p5: P5): void {
             },
             showFrameBorders // show borders if debug setting is enabled
         )
+        
+        // Draw charging indicator (inverted triangle) for player 2 if charging
+        if (player2Slime.isCharging) {
+            // Calculate position to the right of the slime
+            const triangleX = (player2Slime.x + scale * 0.5) * width;
+            const triangleY = player2Slime.y * height;
+            
+            // Fixed size for the triangle with half width
+            const triangleSize = width * 0.05; // Fixed height of the triangle
+            const triangleWidth = triangleSize / 2; // Half width as requested
+            
+            // Create a smaller graphics buffer just for the triangle
+            const triangleBuffer = p5.createGraphics(triangleWidth, triangleSize);
+            
+            // Draw the triangle in the buffer
+            triangleBuffer.push();
+            triangleBuffer.noStroke();
+            triangleBuffer.translate(triangleWidth/2, 0); // Center the triangle horizontally
+            
+            // Draw white background triangle
+            triangleBuffer.fill(255, 255, 255, 220); // White with some transparency
+            triangleBuffer.beginShape();
+            triangleBuffer.vertex(0, triangleSize); // Bottom point
+            triangleBuffer.vertex(-triangleWidth/2, 0); // Top left
+            triangleBuffer.vertex(triangleWidth/2, 0); // Top right
+            triangleBuffer.endShape(triangleBuffer.CLOSE);
+            
+            // Only draw the filled portion if there is some charge
+            if (player2Slime.chargeLevel > 0) {
+                // Calculate fill height based on charge level (fills from bottom to top)
+                const fillHeight = triangleSize * player2Slime.chargeLevel;
+                
+                // Draw the green fill
+                triangleBuffer.fill(0, 255, 0, 200); // Green with some transparency
+                triangleBuffer.beginShape();
+                triangleBuffer.vertex(0, triangleSize); // Bottom point
+                triangleBuffer.vertex(-triangleWidth/2 * (fillHeight/triangleSize), triangleSize - fillHeight); // Left point at fill level
+                triangleBuffer.vertex(triangleWidth/2 * (fillHeight/triangleSize), triangleSize - fillHeight); // Right point at fill level
+                triangleBuffer.endShape(triangleBuffer.CLOSE);
+            }
+            
+            triangleBuffer.pop();
+            
+            // Draw the triangle buffer to the main canvas
+            p5.push();
+            p5.imageMode(p5.CENTER);
+            p5.image(triangleBuffer, triangleX, triangleY);
+            p5.pop();
+            
+            // Clean up the buffer
+            triangleBuffer.remove();
+        }
     }
 }

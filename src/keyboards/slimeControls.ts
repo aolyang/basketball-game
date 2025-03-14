@@ -107,12 +107,28 @@ function updateSlimePosition(
     }
     
     // Handle attack/hit action
-    if (controls.isAttacking && !slime.isHitting) {
-        // Log attack action
-        console.log(`Player ${playerIndex} attack/hit action triggered`)
-        // Trigger the hit animation
-        slime.isHitting = true;
-        slime.hitStartTime = Date.now();
+    if (controls.isAttacking) {
+        if (!slime.isHitting && !slime.isCharging) {
+            // Start charging when attack key is first pressed
+            console.log(`Player ${playerIndex} charging started`)
+            slime.isCharging = true;
+            slime.chargeStartTime = Date.now();
+            slime.chargeLevel = 0;
+            
+            // Also start hit animation but we'll pause it at the last frame
+            slime.isHitting = true;
+            slime.hitStartTime = Date.now();
+        } else if (slime.isCharging) {
+            // Update charge level while key is held (0-100%)
+            const currentTime = Date.now();
+            const chargeElapsedTime = currentTime - slime.chargeStartTime;
+            // Max charge after 2 seconds (2000ms)
+            slime.chargeLevel = Math.min(1.0, chargeElapsedTime / 2000);
+        }
+    } else if (slime.isCharging) {
+        // Key was released, end charging
+        console.log(`释放 (Player ${playerIndex} released charge at level: ${Math.round(slime.chargeLevel * 100)}%)`)
+        slime.isCharging = false;
     }
     
     // Update hit animation state
@@ -120,10 +136,20 @@ function updateSlimePosition(
         const currentTime = Date.now();
         const hitElapsedTime = currentTime - slime.hitStartTime;
         
-        // Check if hit animation should end
-        if (hitElapsedTime >= slime.hitDuration) {
-            slime.isHitting = false;
-            console.log(`Player ${playerIndex} hit animation completed`);
+        // If charging, keep the animation on the last frame
+        if (slime.isCharging) {
+            // Let the animation run until the last frame
+            if (hitElapsedTime < slime.hitDuration) {
+                // Animation is still running to reach last frame
+            } else {
+                // Keep the animation paused at the last frame while charging
+            }
+        } else {
+            // Normal hit animation behavior when not charging
+            if (hitElapsedTime >= slime.hitDuration) {
+                slime.isHitting = false;
+                console.log(`Player ${playerIndex} hit animation completed`);
+            }
         }
     }
 }
