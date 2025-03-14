@@ -11,6 +11,12 @@ let lastRenderTime = 0
 let lastShowFrameBorders = false
 let forceRender = true // Force first render
 
+// Cache last slime positions
+let lastSlimePositions = [
+    { x: 0, y: 0 },
+    { x: 0, y: 0 }
+]
+
 /**
  * Force next render
  */
@@ -25,6 +31,7 @@ export function forceNextRender(): void {
 function hasParamsChanged(): boolean {
     const { width, height } = gameState.canvas
     const { showFrameBorders } = gameState.debug
+    const { slimes } = gameState.player
 
     // First render or forced render
     if (forceRender) {
@@ -38,11 +45,18 @@ function hasParamsChanged(): boolean {
         lastCanvasHeight !== height ||
         lastShowFrameBorders !== showFrameBorders
 
+    // Check if slime positions have changed
+    const slimePositionsChanged = 
+        lastSlimePositions[0].x !== slimes[0].x ||
+        lastSlimePositions[0].y !== slimes[0].y ||
+        lastSlimePositions[1].x !== slimes[1].x ||
+        lastSlimePositions[1].y !== slimes[1].y
+
     // Force update every 30 seconds
     const currentTime = Date.now()
     const timeChanged = (currentTime - lastRenderTime > 30000)
 
-    return paramsChanged || timeChanged
+    return paramsChanged || slimePositionsChanged || timeChanged
 }
 
 /**
@@ -51,11 +65,18 @@ function hasParamsChanged(): boolean {
 function updateCachedParams(): void {
     const { width, height } = gameState.canvas
     const { showFrameBorders } = gameState.debug
+    const { slimes } = gameState.player
 
     lastCanvasWidth = width
     lastCanvasHeight = height
     lastShowFrameBorders = showFrameBorders
     lastRenderTime = Date.now()
+    
+    // Update cached slime positions
+    lastSlimePositions[0].x = slimes[0].x
+    lastSlimePositions[0].y = slimes[0].y
+    lastSlimePositions[1].x = slimes[1].x
+    lastSlimePositions[1].y = slimes[1].y
 }
 
 /**
@@ -92,14 +113,13 @@ export function renderSlimesInGame(p5: P5): void {
 
     const yPosition = floorRealYPercent / height - 0.15 + (slimeMoveAnimation.entityOffsetBottom * scale)
 
-    // Render first slime (always present)
-    // Position on left side for single player, or left-center for two players
-    const firstSlimeX = selectedPlayer === 1 ? 0.2 : 0.3
-
-    // Use the slime's configured position from gameState
+    // Use the slime's configured position from gameState for player 1
+    const player1Slime = gameState.player.slimes[0]
+    
+    // Draw player 1 slime at its current position
     slimeMoveAnimation.draw(
         p5,
-        firstSlimeX, // x position
+        player1Slime.x, // x position from gameState
         yPosition, // y position
         scale, // width
         scale, // height
@@ -107,12 +127,15 @@ export function renderSlimesInGame(p5: P5): void {
         showFrameBorders // show borders if debug setting is enabled
     )
 
-    // If two players are selected, render the second slime on the right side
+    // If two players are selected, render the second slime
     if (selectedPlayer === 2) {
-        // Render second slime with yellow tint
+        // Get player 2 slime position from gameState
+        const player2Slime = gameState.player.slimes[1]
+        
+        // Render second slime with yellow tint at its current position
         slimeMoveAnimation.draw(
             p5,
-            0.7, // x position (right side)
+            player2Slime.x, // x position from gameState
             yPosition, // y position
             scale, // width
             scale, // height
