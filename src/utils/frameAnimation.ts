@@ -110,12 +110,12 @@ export class FrameAnimation {
             this.lastFrameTime = currentTime
         }
     }
-    
+
     /**
      * Force the animation to the last frame
      */
     forceLastFrame(): void {
-        this.currentFrame = this.frameCount - 1;
+        this.currentFrame = this.frameCount - 1
     }
 
     /**

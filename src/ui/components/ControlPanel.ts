@@ -88,12 +88,29 @@ export class ControlPanel {
             .name("Move Speed")
             .onChange(() => forceNextRender())
 
+        // Add slime charge controls
+        const slimeCharge = this.gui.addFolder("Slime Charge")
+
+        // Shared charge triangle controls
+        slimeCharge.add(gameState.player, "chargeTriangleOffsetX", -2, 2, 0.1)
+            .name("Triangle X Offset")
+            .onChange(() => forceNextRender())
+        slimeCharge.add(gameState.player, "chargeTriangleOffsetY", -0.5, 0.5, 0.01)
+            .name("Triangle Y Offset")
+            .onChange(() => forceNextRender())
+
+        // Shared charge speed control for both players
+        slimeCharge.add(gameState.player, "chargeSpeed", 0.1, 2, 0.1)
+            .name("Charge Speed")
+            .onChange(() => forceNextRender())
+
         debug.close()
         floor.close()
         ballNets.close()
         snapshot.close()
         paperTexture.close()
         physics.close()
+        slimeCharge.close()
     }
 
     public toggle() {

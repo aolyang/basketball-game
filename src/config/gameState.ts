@@ -37,6 +37,11 @@ interface PlayerConfig {
     flashCount?: number
     slimes: [SlimeConfig, SlimeConfig] // Array of two slimes for two players
     physics: PhysicsConfig // Physics parameters for player movement
+    // Shared charge triangle offset properties for both slimes
+    chargeTriangleOffsetX: number
+    chargeTriangleOffsetY: number
+    // Shared charge speed for both slimes
+    chargeSpeed: number
 }
 
 interface DebugConfig {
@@ -117,10 +122,14 @@ export const gameState: GameState = {
     player: {
         selectedPlayer: 1,
         physics: {
-            gravity: 0.9,            // Gravity acceleration
+            gravity: 0.9, // Gravity acceleration
             initialJumpVelocity: 0.5, // Initial upward velocity when jumping
-            moveSpeed: 0.75          // Movement speed (percentage moved per frame)
+            moveSpeed: 0.75 // Movement speed (percentage moved per frame)
         },
+        // Shared charge triangle offset properties for both slimes
+        chargeTriangleOffsetX: 0.1, // Horizontal offset for charge triangle (relative to slime scale)
+        chargeTriangleOffsetY: 0.06, // Vertical offset for charge triangle (relative to slime position)
+        chargeSpeed: 2,
         slimes: [
             {
                 x: 0.2, // 20% from left
