@@ -107,10 +107,23 @@ function updateSlimePosition(
     }
     
     // Handle attack/hit action
-    if (controls.isAttacking) {
+    if (controls.isAttacking && !slime.isHitting) {
         // Log attack action
         console.log(`Player ${playerIndex} attack/hit action triggered`)
-        // Here we would trigger the hit animation
-        // For now, just log the action
+        // Trigger the hit animation
+        slime.isHitting = true;
+        slime.hitStartTime = Date.now();
+    }
+    
+    // Update hit animation state
+    if (slime.isHitting) {
+        const currentTime = Date.now();
+        const hitElapsedTime = currentTime - slime.hitStartTime;
+        
+        // Check if hit animation should end
+        if (hitElapsedTime >= slime.hitDuration) {
+            slime.isHitting = false;
+            console.log(`Player ${playerIndex} hit animation completed`);
+        }
     }
 }

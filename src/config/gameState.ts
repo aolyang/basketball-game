@@ -14,6 +14,10 @@ interface SlimeConfig {
     jumpVelocity: number
     jumpHeight: number
     baseY: number
+    // Hit-related properties
+    isHitting: boolean
+    hitStartTime: number
+    hitDuration: number
 }
 
 interface PhysicsConfig {
@@ -122,7 +126,10 @@ export const gameState: GameState = {
                 isJumping: false,
                 jumpVelocity: 0,
                 jumpHeight: 0,
-                baseY: 0.8 // Store the base Y position for returning after jump
+                baseY: 0.8, // Store the base Y position for returning after jump
+                isHitting: false,
+                hitStartTime: 0,
+                hitDuration: 300 // Hit animation duration in milliseconds
             },
             {
                 x: 0.8, // 80% from left
@@ -132,7 +139,10 @@ export const gameState: GameState = {
                 isJumping: false,
                 jumpVelocity: 0,
                 jumpHeight: 0,
-                baseY: 0.8 // Store the base Y position for returning after jump
+                baseY: 0.8, // Store the base Y position for returning after jump
+                isHitting: false,
+                hitStartTime: 0,
+                hitDuration: 300 // Hit animation duration in milliseconds
             }
         ]
     },

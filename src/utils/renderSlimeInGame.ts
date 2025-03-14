@@ -94,6 +94,9 @@ export function renderSlimesInGame(p5: P5): void {
     // Update all animations
     slimeMoveAnimation.update(p5)
     slimeJumpAnimation.update(p5)
+    if (slimeHitAnimation) {
+        slimeHitAnimation.update(p5)
+    }
 
     // Update cached parameters if needed
     if (hasParamsChanged()) {
@@ -133,7 +136,12 @@ export function renderSlimesInGame(p5: P5): void {
     // Use the slime's configured position from gameState for player 1
     
     // Choose animation based on slime state
-    const player1Animation = player1Slime.isJumping ? slimeJumpAnimation : slimeMoveAnimation
+    let player1Animation = slimeMoveAnimation
+    if (player1Slime.isJumping) {
+        player1Animation = slimeJumpAnimation
+    } else if (player1Slime.isHitting && slimeHitAnimation) {
+        player1Animation = slimeHitAnimation
+    }
     
     // Draw player 1 slime at its current position
     player1Animation.draw(
@@ -152,7 +160,12 @@ export function renderSlimesInGame(p5: P5): void {
         const player2Slime = gameState.player.slimes[1]
         
         // Choose animation based on slime state
-        const player2Animation = player2Slime.isJumping ? slimeJumpAnimation : slimeMoveAnimation
+        let player2Animation = slimeMoveAnimation
+        if (player2Slime.isJumping) {
+            player2Animation = slimeJumpAnimation
+        } else if (player2Slime.isHitting && slimeHitAnimation) {
+            player2Animation = slimeHitAnimation
+        }
         
         // Render second slime with yellow tint at its current position
         player2Animation.draw(
