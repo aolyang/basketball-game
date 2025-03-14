@@ -107,30 +107,30 @@ export function forceNextRender(): void {
  */
 function renderSingleNet(g: P5.Graphics, p5: P5, xPos: number, yPos: number, scale: number = 1): void {
     if (!netTexture) return
-    
+
     const { width, height } = gameState.canvas
-    
+
     // Calculate net dimensions
     // Use a reasonable size relative to the canvas
     const netWidth = width * 0.15 * scale
     const netHeight = netWidth * (netTexture.height / netTexture.width) // Maintain aspect ratio
-    
+
     // Calculate position in WebGL coordinates (centered at 0,0)
     const posX = xPos * width - width/2
     const posY = yPos * height - height/2
-    
+
     g.push()
-    
+
     // Position the net
     g.translate(posX, posY, 0)
-    
+
     // Apply texture
     g.texture(netTexture)
     g.noStroke()
-    
+
     // Draw the net as a plane
     g.plane(netWidth, netHeight)
-    
+
     g.pop()
 }
 
@@ -174,10 +174,10 @@ export function renderBallNets(p5: P5): void {
         g.clear()
 
         const { leftX, leftY, rightX, rightY, scale } = gameState.scene.ballNets
-        
+
         // Render left net using configuration
         renderSingleNet(g, p5, leftX, leftY, scale)
-        
+
         // Render right net using configuration
         renderSingleNet(g, p5, rightX, rightY, scale)
 

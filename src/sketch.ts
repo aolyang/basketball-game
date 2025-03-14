@@ -52,11 +52,11 @@ export default function sketch(p5: P5) {
         } else {
             renderGamePage(p5)
         }
-        
+
         // 根据低帧率设置动态调整帧率
         const targetFrameRate = gameState.debug.lowFrameRate ? LOW_FRAME_RATE : HIGH_FRAME_RATE
         p5.frameRate(targetFrameRate)
-        
+
         fpsCounter.update()
         fpsCounter.draw()
     }

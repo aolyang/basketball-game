@@ -33,7 +33,7 @@ export class ControlPanel {
         floor.add(gameState.scene.floor, "contentRatio", 0, 1, 0.01)
             .name("Floor Real Position (0-1)")
             .onChange(() => forceNextRender())
-            
+
         // Add ball nets controls
         const ballNets = this.gui.addFolder("Ball Nets")
         ballNets.add(gameState.scene.ballNets, "leftX", 0, 0.5, 0.01)
