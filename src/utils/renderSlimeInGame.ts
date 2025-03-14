@@ -84,14 +84,16 @@ function updateCachedParams(): void {
  * @param p5 The p5 instance
  */
 export function renderSlimesInGame(p5: P5): void {
-    // Get the slime animation
-    const slimeMoveAnimation = getSlimeJumpAnimation()
-    // const slimeHitAnimation = getSlimeHitAnimation()
-    // const slimeJumpAnimation = getSlimeJumpAnimation()
+    // Get the slime animations
+    const slimeMoveAnimation = getSlimeMoveAnimation()
+    const slimeJumpAnimation = getSlimeJumpAnimation()
+    const slimeHitAnimation = getSlimeHitAnimation()
 
-    if (!slimeMoveAnimation) return
+    if (!slimeMoveAnimation || !slimeJumpAnimation) return
 
+    // Update all animations
     slimeMoveAnimation.update(p5)
+    slimeJumpAnimation.update(p5)
 
     // Update cached parameters if needed
     if (hasParamsChanged()) {
@@ -111,16 +113,33 @@ export function renderSlimesInGame(p5: P5): void {
 
     const floorRealYPercent = floorTopY + (FLOOR_HEIGHT * contentRatio)
 
-    const yPosition = floorRealYPercent / height - 0.15 + (slimeMoveAnimation.entityOffsetBottom * scale)
+    // Base Y position for slimes on the ground
+    const baseYPosition = floorRealYPercent / height - 0.15 + (slimeMoveAnimation.entityOffsetBottom * scale)
+    
+    const player1Slime = gameState.player.slimes[0]
+    const player2Slime = gameState.player.slimes[1]
+    
+    // Initialize slime Y positions if they're at the default value
+    if (player1Slime.y === 0.8 && player1Slime.baseY === 0.8) {
+        player1Slime.y = baseYPosition;
+        player1Slime.baseY = baseYPosition;
+    }
+    
+    if (player2Slime.y === 0.8 && player2Slime.baseY === 0.8) {
+        player2Slime.y = baseYPosition;
+        player2Slime.baseY = baseYPosition;
+    }
 
     // Use the slime's configured position from gameState for player 1
-    const player1Slime = gameState.player.slimes[0]
+    
+    // Choose animation based on slime state
+    const player1Animation = player1Slime.isJumping ? slimeJumpAnimation : slimeMoveAnimation
     
     // Draw player 1 slime at its current position
-    slimeMoveAnimation.draw(
+    player1Animation.draw(
         p5,
         player1Slime.x, // x position from gameState
-        yPosition, // y position
+        player1Slime.y, // y position from gameState (affected by jump)
         scale, // width
         scale, // height
         undefined, // no tint
@@ -132,11 +151,14 @@ export function renderSlimesInGame(p5: P5): void {
         // Get player 2 slime position from gameState
         const player2Slime = gameState.player.slimes[1]
         
+        // Choose animation based on slime state
+        const player2Animation = player2Slime.isJumping ? slimeJumpAnimation : slimeMoveAnimation
+        
         // Render second slime with yellow tint at its current position
-        slimeMoveAnimation.draw(
+        player2Animation.draw(
             p5,
             player2Slime.x, // x position from gameState
-            yPosition, // y position
+            player2Slime.y, // y position from gameState (affected by jump)
             scale, // width
             scale, // height
             {

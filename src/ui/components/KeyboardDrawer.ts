@@ -10,14 +10,14 @@ export class KeyboardDrawer {
         player1: {
             left: 65, // A
             right: 68, // D
-            jump: 87, // W
-            attack: 83 // S
+            jump: 71, // G
+            attack: 72 // H
         },
         player2: {
             left: 37, // LEFT_ARROW
             right: 39, // RIGHT_ARROW
-            jump: 38, // UP_ARROW
-            attack: 40 // DOWN_ARROW
+            jump: 190, // Period (.)
+            attack: 191 // Forward Slash (/)
         }
     }
 
@@ -80,6 +80,8 @@ export class KeyboardDrawer {
             case 39: return "→" // RIGHT_ARROW
             case 38: return "↑" // UP_ARROW
             case 40: return "↓" // DOWN_ARROW
+            case 190: return "." // Period
+            case 191: return "/" // Forward Slash
         }
 
         // Letter and number keys

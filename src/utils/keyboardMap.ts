@@ -24,21 +24,21 @@ export interface KeyboardControls {
 
 /**
  * Default keyboard mapping
- * Player 1: A/D movement, W jump, S attack
- * Player 2: Arrow keys left/right movement, up jump, down attack
+ * Player 1: A/D movement, G jump, H attack
+ * Player 2: Arrow keys left/right movement, period (.) jump, slash (/) attack
  */
 export const DEFAULT_KEYBOARD_MAP: KeyboardControls = {
     player1: {
         left: 65, // A
         right: 68, // D
-        jump: 87, // W
-        attack: 83 // S
+        jump: 71, // G
+        attack: 72 // H
     },
     player2: {
         left: 37, // LEFT_ARROW (37)
         right: 39, // RIGHT_ARROW (39)
-        jump: 38, // UP_ARROW (38)
-        attack: 40 // DOWN_ARROW (40)
+        jump: 190, // Period (.)
+        attack: 191 // Forward Slash (/)
     }
 }
 
@@ -57,6 +57,8 @@ export function getKeyChar(keyCode: number): string {
         case 39: return "→" // RIGHT_ARROW
         case 38: return "↑" // UP_ARROW
         case 40: return "↓" // DOWN_ARROW
+        case 190: return "." // Period
+        case 191: return "/" // Forward Slash
     }
 
     // Letter and number keys

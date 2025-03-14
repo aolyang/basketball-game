@@ -57,8 +57,9 @@ function updateSlimePosition(
     const slime = gameState.player.slimes[slimeIndex]
     const playerIndex = slimeIndex + 1
 
-    // Movement speed (percentage moved per frame)
-    const moveSpeed = 0.01
+    // Get physics parameters from gameState
+    // Scale moveSpeed from 0-1 range to appropriate game value (0-0.02)
+    const moveSpeed = gameState.player.physics.moveSpeed * 0.02
 
     // Update X coordinate based on movement direction
     if (controls.movementDirection !== 0) {
@@ -71,14 +72,45 @@ function updateSlimePosition(
         console.log(`Player ${playerIndex} position: ${slime.x.toFixed(4)} (direction: ${controls.movementDirection})`)
     }
 
-    // TODO: Implement jump and attack logic
-    // Animation state updates for jumping and attacking can be added here
-    // For example:
-    // if (controls.isJumping) {
-    //   // Trigger jump animation
-    // }
-    //
-    // if (controls.isAttacking) {
-    //   // Trigger attack animation
-    // }
+    // Handle jump action
+    if (controls.isJumping && !slime.isJumping) {
+        // Log jump action
+        console.log(`Player ${playerIndex} jump action triggered`)
+        // Trigger the jump by setting initial velocity from gameState
+        // Scale initialJumpVelocity from 0-1 range to appropriate game value (0-0.05)
+        slime.isJumping = true;
+        slime.jumpVelocity = gameState.player.physics.initialJumpVelocity * 0.05;
+        slime.baseY = slime.y; // Store the base Y position
+    }
+    
+    // Apply gravity physics if slime is jumping
+    if (slime.isJumping) {
+        // Apply gravity (reduce velocity) using value from gameState
+        // Scale gravity from 0-1 range to appropriate game value (0-0.003)
+        slime.jumpVelocity -= gameState.player.physics.gravity * 0.003;
+        
+        // Update position based on velocity
+        slime.y -= slime.jumpVelocity;
+        
+        // Calculate jump height for animation purposes
+        slime.jumpHeight = slime.baseY - slime.y;
+        
+        // Check if slime has landed
+        if (slime.y >= slime.baseY) {
+            // Reset jump state
+            slime.isJumping = false;
+            slime.jumpVelocity = 0;
+            slime.jumpHeight = 0;
+            slime.y = slime.baseY; // Ensure slime is exactly at base position
+            console.log(`Player ${playerIndex} landed`);
+        }
+    }
+    
+    // Handle attack/hit action
+    if (controls.isAttacking) {
+        // Log attack action
+        console.log(`Player ${playerIndex} attack/hit action triggered`)
+        // Here we would trigger the hit animation
+        // For now, just log the action
+    }
 }

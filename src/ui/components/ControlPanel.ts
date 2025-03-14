@@ -76,11 +76,24 @@ export class ControlPanel {
         paperTexture.add(gameState.paperTexture, "dotGap", 1, 10, 1)
         paperTexture.addColor(gameState.paperTexture, "baseColor")
 
+        // Add physics controls
+        const physics = this.gui.addFolder("Physics")
+        physics.add(gameState.player.physics, "gravity", 0, 1, 0.01)
+            .name("Gravity")
+            .onChange(() => forceNextRender())
+        physics.add(gameState.player.physics, "initialJumpVelocity", 0, 1, 0.01)
+            .name("Jump Velocity")
+            .onChange(() => forceNextRender())
+        physics.add(gameState.player.physics, "moveSpeed", 0, 1, 0.01)
+            .name("Move Speed")
+            .onChange(() => forceNextRender())
+
         debug.close()
         floor.close()
         ballNets.close()
         snapshot.close()
         paperTexture.close()
+        physics.close()
     }
 
     public toggle() {

@@ -56,6 +56,8 @@ export class KeyboardRenderer {
             case 39: return "→" // RIGHT_ARROW
             case 38: return "↑" // UP_ARROW
             case 40: return "↓" // DOWN_ARROW
+            case 190: return "." // Period
+            case 191: return "/" // Forward Slash
         }
 
         // Letter and number keys

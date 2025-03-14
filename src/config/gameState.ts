@@ -9,6 +9,17 @@ interface SlimeConfig {
     y: number
     scale: number
     score: number
+    // Jump-related properties
+    isJumping: boolean
+    jumpVelocity: number
+    jumpHeight: number
+    baseY: number
+}
+
+interface PhysicsConfig {
+    gravity: number
+    initialJumpVelocity: number
+    moveSpeed: number
 }
 
 interface PlayerConfig {
@@ -17,6 +28,7 @@ interface PlayerConfig {
     selectionAnimationStartTime?: number
     flashCount?: number
     slimes: [SlimeConfig, SlimeConfig] // Array of two slimes for two players
+    physics: PhysicsConfig // Physics parameters for player movement
 }
 
 interface DebugConfig {
@@ -96,18 +108,31 @@ export const gameState: GameState = {
     },
     player: {
         selectedPlayer: 1,
+        physics: {
+            gravity: 0.9,            // Gravity acceleration
+            initialJumpVelocity: 0.5, // Initial upward velocity when jumping
+            moveSpeed: 0.75          // Movement speed (percentage moved per frame)
+        },
         slimes: [
             {
                 x: 0.2, // 20% from left
                 y: 0.8, // 80% from top
                 scale: 1.0,
-                score: 0
+                score: 0,
+                isJumping: false,
+                jumpVelocity: 0,
+                jumpHeight: 0,
+                baseY: 0.8 // Store the base Y position for returning after jump
             },
             {
                 x: 0.8, // 80% from left
                 y: 0.8, // 80% from top
                 scale: 1.0,
-                score: 0
+                score: 0,
+                isJumping: false,
+                jumpVelocity: 0,
+                jumpHeight: 0,
+                baseY: 0.8 // Store the base Y position for returning after jump
             }
         ]
     },
