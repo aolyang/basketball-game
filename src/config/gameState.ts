@@ -42,6 +42,10 @@ interface PlayerConfig {
     chargeTriangleOffsetY: number
     // Shared charge speed for both slimes
     chargeSpeed: number
+    // Basketball properties
+    basketballOffsetX: number
+    basketballOffsetY: number
+    basketballSize: number
 }
 
 interface DebugConfig {
@@ -130,6 +134,10 @@ export const gameState: GameState = {
         chargeTriangleOffsetX: 0.1, // Horizontal offset for charge triangle (relative to slime scale)
         chargeTriangleOffsetY: 0.06, // Vertical offset for charge triangle (relative to slime position)
         chargeSpeed: 2,
+        // Basketball properties
+        basketballOffsetX: 0, // Horizontal offset for basketball (relative to slime position)
+        basketballOffsetY: -0.1, // Vertical offset for basketball (negative value means above slime)
+        basketballSize: 0.05, // Basketball size relative to canvas width
         slimes: [
             {
                 x: 0.2, // 20% from left

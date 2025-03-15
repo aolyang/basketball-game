@@ -3,6 +3,7 @@ import type P5 from "p5"
 import { gameState } from "../../config/gameState"
 import { handleSlimeControls } from "../../keyboards/slimeControls"
 import { renderBallNets } from "../../utils/ballNetRenderer"
+import { renderBasketballShot } from "../../utils/basketballShotRenderer"
 import { renderFloorTexture } from "../../utils/floorTextureRenderer"
 import { logKeyboardEvents } from "../../utils/keyboardMap"
 import { renderSlimesInGame } from "../../utils/renderSlimeInGame"
@@ -41,6 +42,7 @@ export function renderGamePage(p5: P5) {
     renderFloorTexture(p5)
     renderBallNets(p5)
     renderSlimesInGame(p5)
+    renderBasketballShot(p5)
 
     exitDialog.render(p5)
 }
