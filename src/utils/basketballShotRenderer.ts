@@ -17,6 +17,27 @@ interface BasketballShot {
     duration: number
     currentX: number
     currentY: number
+    // Wall bounce properties
+    hasHitWall: boolean
+    bounceTime: number
+    bounceLifetime: number
+    velocityX: number
+    velocityY: number
+    squishFactor: number
+}
+
+// Interface for star particles when basketball passes through net
+interface StarParticle {
+    x: number
+    y: number
+    vx: number
+    vy: number
+    size: number
+    rotation: number
+    rotationSpeed: number
+    opacity: number
+    createdAt: number
+    lifespan: number
 }
 
 // Track shooting state for both players
@@ -24,6 +45,12 @@ interface BasketballShot {
 const basketballShots: [BasketballShot[], BasketballShot[]] = [
     [], // Player 1 basketballs
     []  // Player 2 basketballs
+]
+
+// Store star particles for both nets
+const starParticles: [StarParticle[], StarParticle[]] = [
+    [], // Left net stars
+    []  // Right net stars
 ]
 
 // Function to create a new basketball shot object
@@ -40,7 +67,14 @@ function createBasketballShot(): BasketballShot {
         chargeLevel: 0,
         duration: 0,
         currentX: 0,
-        currentY: 0
+        currentY: 0,
+        // Initialize wall bounce properties
+        hasHitWall: false,
+        bounceTime: 0,
+        bounceLifetime: 1000, // 1 second lifetime after bounce
+        velocityX: 0,
+        velocityY: 0,
+        squishFactor: 1.0 // Normal size (no squish)
     }
 }
 
@@ -52,6 +86,8 @@ const basketballSvgPath = "M1.333 2.89A6.97 6.97 0 0 0 0 7a6.97 6.97 0 0 0 1.333
  * @param p5 p5 instance
  */
 export function renderBasketballShot(p5: P5): void {
+    // Update and render star particles first (so they appear behind basketballs)
+    updateAndRenderStars(p5)
     const { width, height } = gameState.canvas
     const { selectedPlayer, basketballOffsetX, basketballOffsetY, basketballSize } = gameState.player
     const { leftX, leftY, rightX, rightY } = gameState.scene.ballNets
@@ -148,15 +184,75 @@ export function renderBasketballShot(p5: P5): void {
             ball.currentX = currentX
             ball.currentY = currentY
             
-            // Draw basketball at current position
-            drawBasketball(p5, currentX, currentY, basketballSize * width)
-            
-            // Check if shot is complete
-            if (progress >= 1.0) {
-                ball.isActive = false
-                console.log("Player 1 shot complete")
-                // Here you could add scoring logic
+            // Check for wall collision if not already bounced
+            if (!ball.hasHitWall) {
+                // Calculate velocity at current point on the curve for potential bounce
+                // Derivative of quadratic Bezier at point t
+                const dt = 0.01; // Small delta for numerical derivative
+                const tNext = Math.min(1.0, progress + dt);
+                
+                // Calculate position at t+dt
+                const oneMinusTNext = 1 - tNext;
+                const nextX = oneMinusTNext * oneMinusTNext * startX + 2 * oneMinusTNext * tNext * controlX + tNext * tNext * targetX;
+                const nextY = oneMinusTNext * oneMinusTNext * startY + 2 * oneMinusTNext * tNext * controlY + tNext * tNext * targetY;
+                
+                // Calculate velocity (direction vector)
+                ball.velocityX = (nextX - currentX) / dt;
+                ball.velocityY = (nextY - currentY) / dt;
+                
+                // Check for collision with top wall
+                if (currentY <= 0) {
+                    // Ball hit the top wall
+                    ball.hasHitWall = true;
+                    ball.bounceTime = Date.now();
+                    console.log("Basketball hit the wall!");
+                    
+                    // Reflect velocity vector (bounce)
+                    ball.velocityY = -ball.velocityY;
+                    
+                    // Apply squish effect temporarily
+                    ball.squishFactor = 0.7; // Squish horizontally
+                }
             }
+            
+            // Handle post-bounce physics if the ball has hit a wall
+            if (ball.hasHitWall) {
+                const timeSinceBounce = Date.now() - ball.bounceTime;
+                
+                // Apply gravity to vertical velocity
+                ball.velocityY += 0.5; // Gravity effect
+                
+                // Update position based on velocity
+                ball.currentX += ball.velocityX * 0.05; // Scale down for smoother movement
+                ball.currentY += ball.velocityY * 0.05;
+                
+                // Gradually restore ball shape after bounce
+                if (ball.squishFactor < 1.0) {
+                    ball.squishFactor = Math.min(1.0, 0.7 + (timeSinceBounce / 200) * 0.3);
+                }
+                
+                // Check if bounce lifetime is over
+                if (timeSinceBounce > ball.bounceLifetime) {
+                    ball.isActive = false;
+                    console.log("Player 1 ball disappeared after bounce");
+                }
+            } else {
+                // Normal shot trajectory (not bounced yet)
+                // Check if shot is complete
+                if (progress >= 1.0) {
+                    // If the ball reached the target without hitting a wall
+                    ball.isActive = false;
+                    console.log("Player 1 shot complete");
+                    
+                    // Create star burst effect at the net position
+                    createStarBurst(ball.targetX, ball.targetY, 15, false); // Right net (for player 1)
+                    
+                    // Here you could add scoring logic
+                }
+            }
+            
+            // Draw basketball at current position with appropriate squish factor
+            drawBasketball(p5, ball.currentX, ball.currentY, basketballSize * width, ball.squishFactor)
         }
     }
     
@@ -249,15 +345,75 @@ export function renderBasketballShot(p5: P5): void {
                 ball.currentX = currentX
                 ball.currentY = currentY
                 
-                // Draw basketball at current position
-                drawBasketball(p5, currentX, currentY, basketballSize * width)
-                
-                // Check if shot is complete
-                if (progress >= 1.0) {
-                    ball.isActive = false
-                    console.log("Player 2 shot complete")
-                    // Here you could add scoring logic
+                // Check for wall collision if not already bounced
+                if (!ball.hasHitWall) {
+                    // Calculate velocity at current point on the curve for potential bounce
+                    // Derivative of quadratic Bezier at point t
+                    const dt = 0.01; // Small delta for numerical derivative
+                    const tNext = Math.min(1.0, progress + dt);
+                    
+                    // Calculate position at t+dt
+                    const oneMinusTNext = 1 - tNext;
+                    const nextX = oneMinusTNext * oneMinusTNext * startX + 2 * oneMinusTNext * tNext * controlX + tNext * tNext * targetX;
+                    const nextY = oneMinusTNext * oneMinusTNext * startY + 2 * oneMinusTNext * tNext * controlY + tNext * tNext * targetY;
+                    
+                    // Calculate velocity (direction vector)
+                    ball.velocityX = (nextX - currentX) / dt;
+                    ball.velocityY = (nextY - currentY) / dt;
+                    
+                    // Check for collision with top wall
+                    if (currentY <= 0) {
+                        // Ball hit the top wall
+                        ball.hasHitWall = true;
+                        ball.bounceTime = Date.now();
+                        console.log("Basketball hit the wall!");
+                        
+                        // Reflect velocity vector (bounce)
+                        ball.velocityY = -ball.velocityY;
+                        
+                        // Apply squish effect temporarily
+                        ball.squishFactor = 0.7; // Squish horizontally
+                    }
                 }
+                
+                // Handle post-bounce physics if the ball has hit a wall
+                if (ball.hasHitWall) {
+                    const timeSinceBounce = Date.now() - ball.bounceTime;
+                    
+                    // Apply gravity to vertical velocity
+                    ball.velocityY += 0.5; // Gravity effect
+                    
+                    // Update position based on velocity
+                    ball.currentX += ball.velocityX * 0.05; // Scale down for smoother movement
+                    ball.currentY += ball.velocityY * 0.05;
+                    
+                    // Gradually restore ball shape after bounce
+                    if (ball.squishFactor < 1.0) {
+                        ball.squishFactor = Math.min(1.0, 0.7 + (timeSinceBounce / 200) * 0.3);
+                    }
+                    
+                    // Check if bounce lifetime is over
+                    if (timeSinceBounce > ball.bounceLifetime) {
+                        ball.isActive = false;
+                        console.log("Player 2 ball disappeared after bounce");
+                    }
+                } else {
+                    // Normal shot trajectory (not bounced yet)
+                    // Check if shot is complete
+                    if (progress >= 1.0) {
+                        // If the ball reached the target without hitting a wall
+                        ball.isActive = false;
+                        console.log("Player 2 shot complete");
+                        
+                        // Create star burst effect at the net position
+                        createStarBurst(ball.targetX, ball.targetY, 15, true); // Left net (for player 2)
+                        
+                        // Here you could add scoring logic
+                    }
+                }
+                
+                // Draw basketball at current position with appropriate squish factor
+                drawBasketball(p5, ball.currentX, ball.currentY, basketballSize * width, ball.squishFactor)
             }
         }
     }
@@ -269,10 +425,18 @@ export function renderBasketballShot(p5: P5): void {
  * @param x x position in pixels
  * @param y y position in pixels
  * @param size size in pixels
+ * @param squishFactor optional squish factor for visual effect (1.0 = normal, <1.0 = squished horizontally, >1.0 = squished vertically)
  */
-function drawBasketball(p5: P5, x: number, y: number, size: number): void {
+function drawBasketball(p5: P5, x: number, y: number, size: number, squishFactor: number = 1.0): void {
     p5.push()
     p5.translate(x, y)
+    
+    // Apply squish effect if needed
+    if (squishFactor !== 1.0) {
+        // Squish horizontally, stretch vertically (or vice versa)
+        p5.scale(squishFactor, 2 - squishFactor)
+    }
+    
     p5.scale(size / 14) // Scale SVG path (original SVG viewBox is 14x14)
     
     // Render basketball with orange fill
@@ -316,4 +480,130 @@ function drawTrajectory(p5: P5, startX: number, startY: number, endX: number, en
     p5.vertex(startX, startY)
     p5.quadraticVertex(midX, controlY, endX, endY)
     p5.endShape()
+}
+
+/**
+ * Create a star particle at the specified position
+ * @param x x position in pixels
+ * @param y y position in pixels
+ * @returns StarParticle object
+ */
+function createStarParticle(x: number, y: number): StarParticle {
+    // Random velocity between -6 and 6 pixels per frame (doubled range)
+    const vx = (Math.random() * 12 - 6) 
+    const vy = (Math.random() * 12 - 6) - 4 // Slight upward bias (doubled)
+    
+    // Random size between 20 and 40 pixels (doubled size)
+    const size = 20 + Math.random() * 20
+    
+    // Random initial rotation
+    const rotation = Math.random() * Math.PI * 2
+    
+    // Random rotation speed
+    const rotationSpeed = (Math.random() * 0.2 - 0.1)
+    
+    return {
+        x,
+        y,
+        vx,
+        vy,
+        size,
+        rotation,
+        rotationSpeed,
+        opacity: 1.0, // Start fully opaque
+        createdAt: Date.now(),
+        lifespan: 500 + Math.random() * 500 // Random lifespan between 500-1000ms
+    }
+}
+
+/**
+ * Create multiple star particles at the specified position
+ * @param x x position in pixels
+ * @param y y position in pixels
+ * @param count number of particles to create
+ * @param isLeftNet whether this is for the left net (true) or right net (false)
+ */
+function createStarBurst(x: number, y: number, count: number, isLeftNet: boolean): void {
+    const netIndex = isLeftNet ? 0 : 1
+    
+    for (let i = 0; i < count; i++) {
+        starParticles[netIndex].push(createStarParticle(x, y))
+    }
+}
+
+/**
+ * Draw a star shape at the specified position
+ * @param p5 p5 instance
+ * @param x x position in pixels
+ * @param y y position in pixels
+ * @param size size of the star in pixels
+ * @param rotation rotation in radians
+ */
+function drawStar(p5: P5, x: number, y: number, size: number, rotation: number): void {
+    const points = 5 // 5-pointed star
+    const outerRadius = size / 2
+    const innerRadius = outerRadius * 0.4
+    
+    p5.push()
+    p5.translate(x, y)
+    p5.rotate(rotation)
+    p5.beginShape()
+    
+    for (let i = 0; i < points * 2; i++) {
+        const radius = i % 2 === 0 ? outerRadius : innerRadius
+        const angle = (Math.PI * i) / points
+        const px = Math.cos(angle) * radius
+        const py = Math.sin(angle) * radius
+        p5.vertex(px, py)
+    }
+    
+    p5.endShape(p5.CLOSE)
+    p5.pop()
+}
+
+/**
+ * Update and render all star particles
+ * @param p5 p5 instance
+ */
+function updateAndRenderStars(p5: P5): void {
+    const currentTime = Date.now()
+    
+    // Process both nets' star particles
+    for (let netIndex = 0; netIndex < 2; netIndex++) {
+        const particles = starParticles[netIndex]
+        
+        // Update and render each particle
+        for (let i = particles.length - 1; i >= 0; i--) {
+            const particle = particles[i]
+            
+            // Calculate age of particle
+            const age = currentTime - particle.createdAt
+            
+            // Remove expired particles
+            if (age >= particle.lifespan) {
+                particles.splice(i, 1)
+                continue
+            }
+            
+            // Update position
+            particle.x += particle.vx
+            particle.y += particle.vy
+            
+            // Add slight gravity
+            particle.vy += 0.05
+            
+            // Update rotation
+            particle.rotation += particle.rotationSpeed
+            
+            // Update opacity (fade out)
+            particle.opacity = 1 - (age / particle.lifespan)
+            
+            // Render star
+            p5.push()
+            p5.noStroke()
+            p5.fill(255, 215, 0, particle.opacity * 255) // Gold color with fading opacity
+            drawStar(p5, particle.x, particle.y, particle.size, particle.rotation)
+            p5.pop()
+        }
+    }
 }
