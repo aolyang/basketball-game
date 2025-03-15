@@ -1,5 +1,6 @@
 import type P5 from "p5"
 
+import basketboardUrl from "../assets/basketball-board.png"
 import { gameState } from "../config/gameState"
 
 // 篮板图片
@@ -44,7 +45,7 @@ export const secondBackboardConfig = {
  */
 export function preloadSecondBackboardImage(p5: P5): void {
     // 使用p5.loadImage加载外部图片
-    backboardImage = p5.loadImage("src/assets/basketball-board.png",
+    backboardImage = p5.loadImage(basketboardUrl,
         () => {
             console.log("Second basketball backboard image loaded successfully")
             forceRender = true // 图片加载成功后强制渲染

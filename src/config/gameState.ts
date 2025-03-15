@@ -116,7 +116,7 @@ export interface GameState {
 
 export const gameState: GameState = {
     fps: 60,
-    currentPage: "playing",
+    currentPage: "main",
     isPaused: false,
     canvas: {
         width: 1280,

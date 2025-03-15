@@ -1,5 +1,6 @@
 import type P5 from "p5"
 
+import floorTextureUrl from "../assets/floor.png"
 import { gameState } from "../config/gameState"
 
 // Cache WebGL canvas
@@ -11,8 +12,8 @@ let floorTexture: P5.Image | null = null
 let lastCanvasWidth = 0
 let lastCanvasHeight = 0
 let lastRenderTime = 0
-let lastFloorOffsetX = 0
-let lastFloorOffsetY = 0
+let lastOffsetX = 0
+let lastOffsetY = 0.8
 let lastContentRatio = 0
 let lastShowFrameBorders = false
 let forceRender = true // Force first render
@@ -23,7 +24,7 @@ export const FLOOR_HEIGHT = 240
  * @param p5 p5 instance
  */
 export function preloadFloorTexture(p5: P5): void {
-    floorTexture = p5.loadImage("./src/assets/floor.png",
+    floorTexture = p5.loadImage(floorTextureUrl,
         () => {
             console.log("Floor texture loaded successfully")
             forceRender = true // Force render after image loads
@@ -61,8 +62,8 @@ function hasParamsChanged(): boolean {
     const paramsChanged =
         lastCanvasWidth !== width ||
         lastCanvasHeight !== height ||
-        lastFloorOffsetX !== offsetX ||
-        lastFloorOffsetY !== offsetY ||
+        lastOffsetX !== offsetX ||
+        lastOffsetY !== offsetY ||
         lastContentRatio !== contentRatio ||
         lastShowFrameBorders !== showFrameBorders
 
@@ -83,8 +84,8 @@ function updateCachedParams(): void {
 
     lastCanvasWidth = width
     lastCanvasHeight = height
-    lastFloorOffsetX = offsetX
-    lastFloorOffsetY = offsetY
+    lastOffsetX = offsetX
+    lastOffsetY = offsetY
     lastContentRatio = contentRatio
     lastShowFrameBorders = showFrameBorders
     lastRenderTime = Date.now()

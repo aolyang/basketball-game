@@ -1,6 +1,8 @@
 import type P5 from "p5"
 import type { BackboardConfig} from "./basketballBackboardRenderer"
 
+import basketboardUrl from "../assets/basketball-board.png"
+import { gameState } from "../config/gameState"
 import { BackboardRenderer } from "./basketballBackboardRenderer"
 
 // 第一个篮板的配置
@@ -34,8 +36,8 @@ export const secondBackboardConfig: BackboardConfig = {
 }
 
 // 创建篮板渲染器实例
-const firstBackboardRenderer = new BackboardRenderer("src/assets/basketball-board.png", "First")
-const secondBackboardRenderer = new BackboardRenderer("src/assets/basketball-board.png", "Second")
+const firstBackboardRenderer = new BackboardRenderer(basketboardUrl, "First")
+const secondBackboardRenderer = new BackboardRenderer(basketboardUrl, "Second")
 
 /**
  * 预加载所有篮板图片

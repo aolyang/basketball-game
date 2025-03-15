@@ -26,34 +26,29 @@ export interface BackboardConfig {
 export class BackboardRenderer {
     private backboardImage: P5.Image | null = null
     private webglCanvas: P5.Graphics | null = null
-    private lastParams = {
-        positionX: 0,
-        positionY: 0,
-        positionZ: 0,
-        rotationX: 0,
-        rotationY: 0,
-        rotationZ: 0,
-        originX: 0.5,
-        originY: 0.5,
-        originZ: 0,
-        scale: 1,
-        canvasWidth: 0,
-        canvasHeight: 0
-    }
-    private forceRender = true
-    private isFirstRender = true
-    private imagePath: string
-    private name: string
+    private isFirstRender: boolean = true
+    private forceRender: boolean = true
+    private lastPositionX: number = 0
+    private lastPositionY: number = 0
+    private lastPositionZ: number = 0
+    private lastRotationX: number = 0
+    private lastRotationY: number = 0
+    private lastRotationZ: number = 0
+    private lastOriginX: number = 0
+    private lastOriginY: number = 0
+    private lastOriginZ: number = 0
+    private lastScale: number = 1
+    private lastVisible: boolean = true
 
     /**
      * 创建篮板渲染器
-     * @param imagePath 篮板图片路径
-     * @param name 篮板名称，用于日志输出
+     * @param imagePath 篮板图片路径（通过 import 导入的 URL）
+     * @param name 篮板名称（用于日志）
      */
-    constructor(imagePath: string, name: string) {
-        this.imagePath = imagePath
-        this.name = name
-    }
+    constructor(
+        private readonly imagePath: string,
+        private readonly name: string = "Basketball"
+    ) {}
 
     /**
      * 预加载篮板图片
@@ -108,18 +103,17 @@ export class BackboardRenderer {
 
         // 检查参数是否发生变化
         return (
-            this.lastParams.positionX !== positionX ||
-            this.lastParams.positionY !== positionY ||
-            this.lastParams.positionZ !== positionZ ||
-            this.lastParams.rotationX !== rotationX ||
-            this.lastParams.rotationY !== rotationY ||
-            this.lastParams.rotationZ !== rotationZ ||
-            this.lastParams.originX !== originX ||
-            this.lastParams.originY !== originY ||
-            this.lastParams.originZ !== originZ ||
-            this.lastParams.scale !== scale ||
-            this.lastParams.canvasWidth !== width ||
-            this.lastParams.canvasHeight !== height
+            this.lastPositionX !== positionX ||
+            this.lastPositionY !== positionY ||
+            this.lastPositionZ !== positionZ ||
+            this.lastRotationX !== rotationX ||
+            this.lastRotationY !== rotationY ||
+            this.lastRotationZ !== rotationZ ||
+            this.lastOriginX !== originX ||
+            this.lastOriginY !== originY ||
+            this.lastOriginZ !== originZ ||
+            this.lastScale !== scale ||
+            this.lastVisible !== config.visible
         )
     }
 
@@ -136,18 +130,17 @@ export class BackboardRenderer {
             scale
         } = config
 
-        this.lastParams.positionX = positionX
-        this.lastParams.positionY = positionY
-        this.lastParams.positionZ = positionZ
-        this.lastParams.rotationX = rotationX
-        this.lastParams.rotationY = rotationY
-        this.lastParams.rotationZ = rotationZ
-        this.lastParams.originX = originX
-        this.lastParams.originY = originY
-        this.lastParams.originZ = originZ
-        this.lastParams.scale = scale
-        this.lastParams.canvasWidth = width
-        this.lastParams.canvasHeight = height
+        this.lastPositionX = positionX
+        this.lastPositionY = positionY
+        this.lastPositionZ = positionZ
+        this.lastRotationX = rotationX
+        this.lastRotationY = rotationY
+        this.lastRotationZ = rotationZ
+        this.lastOriginX = originX
+        this.lastOriginY = originY
+        this.lastOriginZ = originZ
+        this.lastScale = scale
+        this.lastVisible = config.visible
         this.forceRender = false
     }
 

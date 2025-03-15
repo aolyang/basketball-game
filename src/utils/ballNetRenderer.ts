@@ -1,5 +1,6 @@
 import type P5 from "p5"
 
+import ballNetUrl from "../assets/ball-net.png"
 import { gameState } from "../config/gameState"
 
 // Cache WebGL canvas
@@ -23,7 +24,7 @@ let forceRender = true // Force first render
  * @param p5 p5 instance
  */
 export function preloadNetTexture(p5: P5): void {
-    netTexture = p5.loadImage("./src/assets/ball-net.png",
+    netTexture = p5.loadImage(ballNetUrl,
         () => {
             console.log("Ball net texture loaded successfully")
             forceRender = true // Force render after image loads
