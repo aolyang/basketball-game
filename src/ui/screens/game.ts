@@ -9,9 +9,13 @@ import { logKeyboardEvents } from "../../utils/keyboardMap"
 import { renderSlimesInGame } from "../../utils/renderSlimeInGame"
 import { Dialog } from "../components/Dialog"
 import { KeyboardDrawer } from "../components/KeyboardDrawer"
+import { ScoreCounter } from "../components/ScoreCounter"
 import { drawPaperTexture } from "../effects/PaperTexture"
 
 new KeyboardDrawer()
+
+// Create score counter instance
+let scoreCounter: ScoreCounter
 
 const exitDialog = new Dialog({
     title: "Exit Game",
@@ -38,11 +42,19 @@ export function renderGamePage(p5: P5) {
         handleSlimeControls(p5)
     }
 
+    // Initialize score counter if it doesn't exist
+    if (!scoreCounter) {
+        scoreCounter = new ScoreCounter(p5)
+    }
+
     drawPaperTexture(p5, gameState.canvas.width, gameState.canvas.height)
     renderFloorTexture(p5)
     renderBallNets(p5)
     renderSlimesInGame(p5)
     renderBasketballShot(p5)
+    
+    // Draw the score counter
+    scoreCounter.draw()
 
     exitDialog.render(p5)
 }

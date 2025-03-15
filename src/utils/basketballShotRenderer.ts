@@ -247,7 +247,9 @@ export function renderBasketballShot(p5: P5): void {
                     // Create star burst effect at the net position
                     createStarBurst(ball.targetX, ball.targetY, 15, false); // Right net (for player 1)
                     
-                    // Here you could add scoring logic
+                    // Increment player 1's score
+                    gameState.player.slimes[0].score += 1;
+                    console.log(`Player 1 scored! New score: ${gameState.player.slimes[0].score}`)
                 }
             }
             
@@ -408,7 +410,9 @@ export function renderBasketballShot(p5: P5): void {
                         // Create star burst effect at the net position
                         createStarBurst(ball.targetX, ball.targetY, 15, true); // Left net (for player 2)
                         
-                        // Here you could add scoring logic
+                        // Increment player 2's score
+                        gameState.player.slimes[1].score += 1;
+                        console.log(`Player 2 scored! New score: ${gameState.player.slimes[1].score}`)
                     }
                 }
                 
