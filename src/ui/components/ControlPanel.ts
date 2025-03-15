@@ -103,7 +103,7 @@ export class ControlPanel {
         slimeCharge.add(gameState.player, "chargeSpeed", 0.1, 2, 0.1)
             .name("Charge Speed")
             .onChange(() => forceNextRender())
-            
+
         // Basketball controls
         const basketball = this.gui.addFolder("Basketball")
         basketball.add(gameState.player, "basketballOffsetX", -0.2, 0.2, 0.01)

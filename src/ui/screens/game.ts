@@ -52,7 +52,7 @@ export function renderGamePage(p5: P5) {
     renderBallNets(p5)
     renderSlimesInGame(p5)
     renderBasketballShot(p5)
-    
+
     // Draw the score counter
     scoreCounter.draw()
 
