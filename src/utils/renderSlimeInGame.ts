@@ -241,13 +241,14 @@ export function renderSlimesInGame(p5: P5): void {
                 g: 220,
                 b: 0
             },
-            showFrameBorders // show borders if debug setting is enabled
+            showFrameBorders, // show borders if debug setting is enabled
+            true // 水平镜像翻转第二个玩家
         )
 
         // Draw charging indicator (inverted triangle) for player 2 if charging
         if (player2Slime.isCharging) {
             // Calculate position using shared offset from gameState
-            const triangleX = (player2Slime.x + gameState.player.chargeTriangleOffsetX * scale) * width
+            const triangleX = (player2Slime.x - gameState.player.chargeTriangleOffsetX * scale) * width
             const triangleY = (player2Slime.y + gameState.player.chargeTriangleOffsetY) * height
 
             // Fixed size for the triangle with half width

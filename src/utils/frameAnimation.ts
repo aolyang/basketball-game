@@ -127,13 +127,14 @@ export class FrameAnimation {
      * @param heightPercent Optional height as a percentage of canvas height (0-1)
      * @param filter Optional filter to apply to the image (e.g., tint)
      * @param showBorders Optional flag to show frame borders for debugging
+     * @param flipHorizontal Optional flag to flip the image horizontally
      */
     draw(p5: P5, xPercent: number, yPercent: number, widthPercent?: number, heightPercent?: number, filter?: {
         r: number
         g: number
         b: number
         a?: number
-    }, showBorders?: boolean): void {
+    }, showBorders?: boolean, flipHorizontal: boolean = false): void {
         // Calculate the source rectangle y-position based on current frame
         const sourceY = Math.floor(this.currentFrame) * this.frameHeight
 
@@ -179,11 +180,24 @@ export class FrameAnimation {
             }
         }
 
-        p5.image(
-            this.image,
-            x, y + verticalOffset, destWidth, destHeight, // Destination rectangle with vertical adjustment
-            0, sourceY, this.frameWidth, this.frameHeight // Source rectangle
-        )
+        // Apply horizontal flip if requested
+        if (flipHorizontal) {
+            p5.push()
+            p5.translate(x + destWidth, y + verticalOffset)
+            p5.scale(-1, 1)
+            p5.image(
+                this.image,
+                0, 0, destWidth, destHeight, // Destination rectangle with vertical adjustment
+                0, sourceY, this.frameWidth, this.frameHeight // Source rectangle
+            )
+            p5.pop()
+        } else {
+            p5.image(
+                this.image,
+                x, y + verticalOffset, destWidth, destHeight, // Destination rectangle with vertical adjustment
+                0, sourceY, this.frameWidth, this.frameHeight // Source rectangle
+            )
+        }
 
         // Draw borders if requested
         if (showBorders) {
